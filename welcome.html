@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Household Task App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="variables.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <div id="goback-btn" style="display: none;">
+            <i class="fas fa-arrow-left"></i>
+        </div>
+        <header>
+            <h1>Dein Kochplan</h1>
+            <p>Streitereien ums Kochen finden hier ihr Ende!</p>
+        </header>
+        <main id="main-content">
+            <button id="create-household-btn">Neuen Haushalt erstellen</button>
+            <button id="join-household-btn">Bestehendem Haushalt beitreten</button>
+
+            <div id="create-household" style="display: none;">
+                <p>Name des Haushalts:</p>
+                <input type="text" id="household-name-input">
+                <button id="next-btn" disabled>Weiter</button>
+            </div>
+
+            <div id="create-user" style="display: none;">
+                <p>Benutzername:</p>
+                <input type="text" id="username-input">
+                <button id="create-user-btn" disabled>Create</button>
+            </div>
+
+            <div id="join-household" style="display: none;">
+                <p>Code des Haushalts:</p>
+                <input type="text" id="household-code-input">
+                <button id="join-btn" disabled>Beitreten</button>
+            </div>
+
+            <div id="select-user" style="display: none;">
+                <p>Bestehenden Benutzer auswählen oder neuen erstellen:</p>
+                <table id="users-table"></table>
+                <input type="text" id="new-username-input" placeholder="New username">
+                <button id="create-join-user-btn" disabled>Erstellen und beitreten</button>
+            </div>
+        </main>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+    <script src="auth.js" defer></script>
+</body>
+</html>

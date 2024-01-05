@@ -1,0 +1,24 @@
+:root {
+    --primary-dark: #64731E;
+    --primary: #8E9B2E;
+    --primary-light: #BDC577;
+    
+    --secondary-dark: #4d5b17;
+    --secondary: #A1AF3E;
+    --secondary-light: #CDD26A;
+    
+    --accent: #FFCC00;
+    
+    --background: #F5F5F5;
+    --surface: #FFFFFF;
+    --text-primary: #f4f4f4;
+    --text-secondary: #666666;
+    --text-disabled: #999999;
+    --border-color: #CCCCCC;
+    
+    --btn-primary: #ff7400; 
+    --btn-secondary: #ff73006c; 
+    
+    --success: #4CAF50;
+    --error: #F44336;
+}
