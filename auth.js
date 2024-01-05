@@ -80,7 +80,7 @@ createBackBtn.addEventListener('click', () => {
 createUserBtn.addEventListener('click', () => {
     // Generate a random code
     const code = Math.floor(Math.random() * 100000).toString();
-
+    
     // Create a new household in Firestore
     db.collection('households').add({
         name: householdNameInput.value,

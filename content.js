@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Get the household ID and the username from the local storage
     const householdId = localStorage.getItem('householdId');
     const username = localStorage.getItem('username');
-    
+
 
     // If the household ID or the username doesn't exist, redirect to the welcome.html page
     if (!householdId || !username) {
@@ -97,14 +97,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (doc.exists) {
                 const data = doc.data();
                 console.log('Fetched data:', data); // Print the fetched data
-    
+
                 // Loop through all cells
-                
+
                 allCells.forEach(cell => {
                     const cellId = cell.id;
                     const [day, meal] = cellId.split('-');
                     const needToCook = data[`${day}.${meal}.needToCook`];
-    
+
                     if (needToCook === true) {
                         // Update the content of the cell when needToCook is true
                         const assignedUser = data[`${day}.${meal}.assignedUser`];
@@ -116,9 +116,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 });
             } else {
                 console.log('No data found for the current week.');
-                    allCells.forEach(cell => {
-                        cell.textContent = `(Kocht: false)`;
-                    });
+                allCells.forEach(cell => {
+                    cell.textContent = `(Kocht: false)`;
+                });
             }
         }).catch(error => {
             console.error('Error getting document:', error);
@@ -194,28 +194,36 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('username2').textContent = username;
 
     const logOutbtn = document.getElementById('logout-btn');
-    logOutbtn.addEventListener('click' , () => {
+    logOutbtn.addEventListener('click', () => {
 
         window.location.href = 'welcome.html';
 
     })
 
     const inviteUserBtn = document.getElementById('invite-user-btn');
-    inviteUserBtn.addEventListener('click', async () => { // Mark the arrow function as async
-
+inviteUserBtn.addEventListener('click', async () => {
     try {
-        const codeToShare = "Your code here"; // Replace this with the code you want to share
-    
-        await navigator.share({
-            title: 'Share Code',
-            text: codeToShare,
-        });
-    
-        console.log('Code shared successfully');
-    } catch (error) {
-        console.error('Error sharing code:', error);
-    }
+        const week = getCurrentWeek();
+        const doc = await db.collection('households').doc(householdId).get();
+        console.log(doc);
+        if (doc.exists) {
+            const codeToShare = doc.data().code;
+            console.log(codeToShare);
 
+            await navigator.share({
+                title: 'Share Code',
+                text: codeToShare,
+            });
+
+            console.log('Code shared successfully');
+        } else {
+            console.error('Document does not exist');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+    }
 });
+
+
 
 });
