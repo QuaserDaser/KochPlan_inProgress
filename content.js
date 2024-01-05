@@ -208,11 +208,13 @@ inviteUserBtn.addEventListener('click', async () => {
         console.log(doc);
         if (doc.exists) {
             const codeToShare = doc.data().code;
+            const householdName = doc.data().name;
             console.log(codeToShare);
+            console.log(householdName);
 
             await navigator.share({
-                title: 'Share Code',
-                text: codeToShare,
+                title: 'Code zum Einladen weiterleiten',
+                text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei.`,
             });
 
             console.log('Code shared successfully');
