@@ -76,11 +76,40 @@ createBackBtn.addEventListener('click', () => {
     location.reload();
 })
 
+async function generateUniqueCode() {
+    let isUnique = false;
+    let code = '';
+
+    while (!isUnique) {
+        // Generate a random code
+        code = Math.floor(Math.random() * 100000).toString();
+
+        // Fetch all household documents once
+        const codeFetch = await db.collection('households').get();
+
+        let isCodeUnique = true;
+        codeFetch.forEach((doc) => {
+            const codeFetched = doc.data().code;
+            if (code === codeFetched) {
+                isCodeUnique = false;
+                return; // Break out of the forEach loop if a matching code is found
+            }
+        });
+
+        if (isCodeUnique) {
+            // The generated code is unique, exit the loop
+            isUnique = true;
+        }
+    }
+
+    return code;
+}
+
+
 // Add event listener to create user button
-createUserBtn.addEventListener('click', () => {
+createUserBtn.addEventListener('click', async() => {
     // Generate a random code
-    const code = Math.floor(Math.random() * 100000).toString();
-    
+    const code = await generateUniqueCode();
     // Create a new household in Firestore
     db.collection('households').add({
         name: householdNameInput.value,

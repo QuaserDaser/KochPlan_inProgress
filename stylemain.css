@@ -262,16 +262,23 @@ table td {
     /* Make text black */
 }
 
-#dialog button {
-    /* Other styles */
-    width: 100%;
-    /* Make the button larger and wider */
-    padding: 20px;
-    /* Increase the padding */
+
+
+#done{
+    width: 200px;
+    height: 45px;
+    border-radius: 15px;
     background-color: var(--primary-dark);
-    /* Use color variable */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     color: #efefef;
-    /* Make text white */
+    font-size: 24px;
+    cursor: pointer;
+    z-index: 999;
+    position: absolute;
+    bottom: 10%;
+
 }
 
 #dialog-close {
@@ -318,6 +325,9 @@ table td {
     z-index: 99;
     /* Make sure it's behind the dialog */
 }
+
+
+
 
 @media (max-width: 600px) {
     .household-name {

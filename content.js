@@ -194,21 +194,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('username2').textContent = username;
 
     const logOutbtn = document.getElementById('logout-btn');
-    logOutbtn.addEventListener('click', () => {
-
-        window.location.href = 'welcome.html';
-
-    })
+logOutbtn.addEventListener('click', () => {
+    window.location.href = 'welcome.html';
+});
 
     const inviteUserBtn = document.getElementById('invite-user-btn');
 inviteUserBtn.addEventListener('click', async () => {
     try {
         const week = getCurrentWeek();
         const doc = await db.collection('households').doc(householdId).get();
-        console.log(doc);
         if (doc.exists) {
-            const codeToShare = doc.data().code;
-            const householdName = doc.data().name;
             console.log(codeToShare);
             console.log(householdName);
 
