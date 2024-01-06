@@ -39,6 +39,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
         });
     }
 
+    let n = 0;
+
+
     // Get all cells
     const cells = document.querySelectorAll('td[id]');
     cells.forEach(cell => {
@@ -60,7 +63,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const needToCook = document.getElementById('needToCook').checked;
 
         // Save data to Firebase
-        const week = getCurrentWeek();
+        const week = getCurrentWeek(n);
         const cellId = localStorage.getItem('cellId');
         console.log('Cell ID from localStorage:', cellId);
 
@@ -91,13 +94,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 
     function fetchAndFilterDataForCooking() {
-        const week = getCurrentWeek();
+        const week = getCurrentWeek(n);
         const allCells = document.querySelectorAll('td[id]');
         db.collection('households').doc(householdId).collection('weeks').doc(week).get().then(doc => {
             if (doc.exists) {
                 const data = doc.data();
                 console.log('Fetched data:', data); // Print the fetched data
-
                 // Loop through all cells
 
                 allCells.forEach(cell => {
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         cell.textContent = `${assignedUser}`;
                     } else {
                         // Update the content of the cell when needToCook is false
-                        cell.textContent = `(Kocht: false)`;
+                        cell.textContent = ``;
                     }
                 });
             } else {
@@ -137,13 +139,30 @@ document.addEventListener('DOMContentLoaded', (event) => {
     fetchAndFilterDataForCooking();
     setInterval(fetchAndFilterDataForCooking, 5000);
 
-    function getCurrentWeek() {
+    function getWeekRange(n) {
+        const now = new Date();
+        now.setDate(now.getDate() + (n * 7)); // Move the date by n weeks
+    
+        const currentDay = now.getDay();
+        const firstDay = new Date(now.getTime() - (currentDay - 1) * 24 * 60 * 60 * 1000);
+        const lastDay = new Date(now.getTime() + (7 - currentDay) * 24 * 60 * 60 * 1000);
+    
+        const firstDayFormatted = `${('0' + firstDay.getDate()).slice(-2)}/${('0' + (firstDay.getMonth() + 1)).slice(-2)}/${firstDay.getFullYear() % 100}`;
+        const lastDayFormatted = `${('0' + lastDay.getDate()).slice(-2)}/${('0' + (lastDay.getMonth() + 1)).slice(-2)}/${lastDay.getFullYear() % 100}`;
+    
+        return `${firstDayFormatted} - ${lastDayFormatted}`;
+    }
+
+
+
+    function getCurrentWeek(n) {
         const now = new Date();
         const start = new Date(now.getFullYear(), 0, 0);
-        const diff = (now - start) + ((start.getTimezoneOffset() - now.getTimezoneOffset()) * 60 * 1000);
+        const diff = now - start;
         const oneDay = 1000 * 60 * 60 * 24;
         const day = Math.floor(diff / oneDay);
-        return `Week_${Math.ceil(day / 7)}`;
+        const weekNumber = Math.ceil((day + 1 + (n * 7)) / 7);
+        return `Week_${weekNumber}`;
     }
 
     document.getElementById('dialog-close').addEventListener('click', () => {
@@ -185,8 +204,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const firstDayFormatted = `${('0' + firstDay.getDate()).slice(-2)}/${('0' + (firstDay.getMonth() + 1)).slice(-2)}/${firstDay.getFullYear() % 100}`;
     const lastDayFormatted = `${('0' + lastDay.getDate()).slice(-2)}/${('0' + (lastDay.getMonth() + 1)).slice(-2)}/${lastDay.getFullYear() % 100}`;
 
-    // Update the second h1 element to display the first and last dates of the current week
-    currentWeekElement.textContent = `${firstDayFormatted} - ${lastDayFormatted}`;
+    const lastWeekBtn = document.getElementById('last-week-btn');
+    const nextWeekBtn = document.getElementById('next-week-btn');
+
+
+    lastWeekBtn.addEventListener('click', () => {
+        n--;
+        currentWeekElement.textContent = getWeekRange(n);
+        fetchAndFilterDataForCooking();
+    });
+
+    nextWeekBtn.addEventListener('click', () => {
+        n++;
+        currentWeekElement.textContent = getWeekRange(n);
+        fetchAndFilterDataForCooking();
+    });
+
+    currentWeekElement.textContent = getWeekRange(n);
 
 
 
@@ -194,43 +228,43 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('username2').textContent = username;
 
     const logOutbtn = document.getElementById('logout-btn');
-logOutbtn.addEventListener('click', () => {
-    window.location.href = 'welcome.html';
-});
+    logOutbtn.addEventListener('click', () => {
+        window.location.href = 'welcome.html';
+    });
 
-const inviteUserBtn = document.getElementById('invite-user-btn');
-inviteUserBtn.addEventListener('click', async () => {
-    try {
-        const week = getCurrentWeek();
-        const doc = await db.collection('households').doc(householdId).get();
-        console.log(doc);
-        if (doc.exists) {
-            const codeToShare = doc.data().code;
-            const householdName = doc.data().name;
-            const baseURL = 'https://kochplan.prydox-tech.de';
-            const sharePath = '/welcome.html';
-            const shareURL = new URL(sharePath, baseURL);
-            
-            // Append the code as a URL parameter
-            shareURL.searchParams.append('code', codeToShare);
+    const inviteUserBtn = document.getElementById('invite-user-btn');
+    inviteUserBtn.addEventListener('click', async () => {
+        try {
+            const week = getCurrentWeek(n);
+            const doc = await db.collection('households').doc(householdId).get();
+            console.log(doc);
+            if (doc.exists) {
+                const codeToShare = doc.data().code;
+                const householdName = doc.data().name;
+                const baseURL = 'https://kochplan.prydox-tech.de';
+                const sharePath = '/welcome.html';
+                const shareURL = new URL(sharePath, baseURL);
 
-            console.log(codeToShare);
-            console.log(householdName);
+                // Append the code as a URL parameter
+                shareURL.searchParams.append('code', codeToShare);
 
-            await navigator.share({
-                title: 'Code zum Einladen weiterleiten',
-                text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei.`,
-                url: shareURL.href, // Use the href of the URL object
-            });
+                console.log(codeToShare);
+                console.log(householdName);
 
-            console.log('Code shared successfully');
-        } else {
-            console.error('Document does not exist');
+                await navigator.share({
+                    title: 'Code zum Einladen weiterleiten',
+                    text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei.`,
+                    url: shareURL.href, // Use the href of the URL object
+                });
+
+                console.log('Code shared successfully');
+            } else {
+                console.error('Document does not exist');
+            }
+        } catch (error) {
+            console.error('Error:', error);
         }
-    } catch (error) {
-        console.error('Error:', error);
-    }
-});
+    });
 
 
 

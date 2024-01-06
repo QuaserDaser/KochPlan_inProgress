@@ -58,7 +58,8 @@ body {
     z-index: 1000;
     background: var(--surface);
     padding: 20px;
-    border-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
     color: #000;
     transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
     transform: translateX(-100%);
@@ -139,11 +140,12 @@ body {
 
 #last-week-btn,
 #next-week-btn {
-    /* Other button styles */
+    width: 30px;
+    height: 30px;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 1;
+    z-index: 50;
     /* Ensure the buttons are above the table */
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
