@@ -183,4 +183,13 @@ createJoinUserBtn.addEventListener('click', () => {
     .catch((error) => {
         console.error(`Error updating document: ${error}`);
     });
+
+    const params = new URLSearchParams(window.location.search);
+    const sharedCode = params.get('code');
+    if (sharedCode) {
+        document.getElementById('household-code-input').value = sharedCode;
+    }
+
+
+
 });
