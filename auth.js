@@ -65,7 +65,7 @@ function getUrlParameter(name) {
 
 function autoFill() {
     const sharedCode = getUrlParameter('code');
-    if (sharedCode && !executed) {
+    if (sharedCode) {
         console.log(sharedCode);
         joinHouseholdBtn.click();
         householdCodeInput.value = sharedCode;
