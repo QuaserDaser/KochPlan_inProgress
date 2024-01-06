@@ -75,7 +75,7 @@ function autoFill() {
 }
 
 
-window.onload(autoFill);
+window.onload = autoFill;
 
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
