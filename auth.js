@@ -62,20 +62,18 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-
+const executed = false;
 function autoFill() {
     const sharedCode = getUrlParameter('code');
-    if (sharedCode) {
+    if (sharedCode && !executed) {
         console.log(sharedCode);
         joinHouseholdBtn.click();
         householdCodeInput.value = sharedCode;
+        executed = true;
     }
 }
 
-if (document.referrer && document.referrer !== window.location.href) {
-    console.log('Page opened via a link');
-    autoFill();
-}
+window.onload = autoFill;
 
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
