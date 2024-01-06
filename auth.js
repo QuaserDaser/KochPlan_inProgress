@@ -62,14 +62,14 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-const executed = false;
+
 function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode && !executed) {
         console.log(sharedCode);
         joinHouseholdBtn.click();
         householdCodeInput.value = sharedCode;
-        executed = true;
+
     }
 }
 
@@ -94,7 +94,7 @@ usernameInput.addEventListener('input', () => {
 });
 
 createBackBtn.addEventListener('click', () => {
-    location.reload();
+    window.location.href = './welcome.html';
 })
 
 async function generateUniqueCode() {
@@ -143,7 +143,7 @@ createUserBtn.addEventListener('click', async () => {
             localStorage.setItem('householdId', docRef.id);
             localStorage.setItem('username', usernameInput.value);
             // Redirect to the index.html page
-            window.location.href = 'index.html';
+            window.location.href = './index.html';
         })
         .catch((error) => {
             console.error(`Error adding document: ${error}`);
@@ -183,7 +183,7 @@ usersTable.addEventListener('click', (event) => {
     if (event.target.tagName === 'TD') {
         // If a td element was clicked, set the username in the local storage and redirect
         localStorage.setItem('username', event.target.textContent);
-        window.location.href = 'index.html';
+        window.location.href = './index.html';
     }
 });
 
@@ -199,7 +199,7 @@ createJoinUserBtn.addEventListener('click', () => {
             // Store the username in the local storage
             localStorage.setItem('username', newUsernameInput.value);
             // Redirect to the index.html page
-            window.location.href = 'index.html';
+            window.location.href = './index.html';
         })
         .catch((error) => {
             console.error(`Error updating document: ${error}`);
