@@ -68,8 +68,7 @@ function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode) {
         console.log(sharedCode);
-        
-        householdCodeInput.value = 'hallo';
+        householdCodeInput.value = sharedCode;
         joinHouseholdBtn.click();
     }
 }
@@ -175,9 +174,6 @@ joinBtn.addEventListener('click', () => {
         });
 });
 
-function joinFunction(){
-    console.log("Hallo");
-}
 
 // Add event listener to new username input
 newUsernameInput.addEventListener('input', () => {
