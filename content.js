@@ -209,14 +209,18 @@ inviteUserBtn.addEventListener('click', async () => {
             const householdName = doc.data().name;
             const baseURL = 'https://kochplan.prydox-tech.de';
             const sharePath = '/welcome.html';
-            const shareURL = new URL(sharePath, baseURL).href;
+            const shareURL = new URL(sharePath, baseURL);
+            
+            // Append the code as a URL parameter
+            shareURL.searchParams.append('code', codeToShare);
+
             console.log(codeToShare);
             console.log(householdName);
 
             await navigator.share({
                 title: 'Code zum Einladen weiterleiten',
                 text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei.`,
-                url: shareURL,
+                url: shareURL.href, // Use the href of the URL object
             });
 
             console.log('Code shared successfully');

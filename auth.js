@@ -107,7 +107,7 @@ async function generateUniqueCode() {
 
 
 // Add event listener to create user button
-createUserBtn.addEventListener('click', async() => {
+createUserBtn.addEventListener('click', async () => {
     // Generate a random code
     const code = await generateUniqueCode();
     // Create a new household in Firestore
@@ -116,40 +116,40 @@ createUserBtn.addEventListener('click', async() => {
         users: [usernameInput.value],
         code: code
     })
-    .then((docRef) => {
-        console.log(`Household created with ID: ${docRef.id}`);
-        // Store the household ID and the username in the local storage
-        localStorage.setItem('householdId', docRef.id);
-        localStorage.setItem('username', usernameInput.value);
-        // Redirect to the index.html page
-        window.location.href = 'index.html';
-    })
-    .catch((error) => {
-        console.error(`Error adding document: ${error}`);
-    });
+        .then((docRef) => {
+            console.log(`Household created with ID: ${docRef.id}`);
+            // Store the household ID and the username in the local storage
+            localStorage.setItem('householdId', docRef.id);
+            localStorage.setItem('username', usernameInput.value);
+            // Redirect to the index.html page
+            window.location.href = 'index.html';
+        })
+        .catch((error) => {
+            console.error(`Error adding document: ${error}`);
+        });
 });
 
 // Add event listener to join button
 joinBtn.addEventListener('click', () => {
     // Search for the household with the entered code in Firestore
     db.collection('households').where('code', '==', householdCodeInput.value).get()
-    .then((querySnapshot) => {
-        if (!querySnapshot.empty) {
-            // If the household is found, hide the join household div and display the select user div
-            joinHouseholdDiv.style.display = 'none'; // Hide the join household div
-            selectUserDiv.style.display = 'block'; // Display the select user div
-            // Store the household ID in the local storage
-            localStorage.setItem('householdId', querySnapshot.docs[0].id);
-            // Display the existing users in the table
-            const users = querySnapshot.docs[0].data().users;
-            usersTable.innerHTML = users.map(user => `<tr><td>${user}</td></tr>`).join('');
-        } else {
-            console.error('No household found with the entered code');
-        }
-    })
-    .catch((error) => {
-        console.error(`Error getting documents: ${error}`);
-    });
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                // If the household is found, hide the join household div and display the select user div
+                joinHouseholdDiv.style.display = 'none'; // Hide the join household div
+                selectUserDiv.style.display = 'block'; // Display the select user div
+                // Store the household ID in the local storage
+                localStorage.setItem('householdId', querySnapshot.docs[0].id);
+                // Display the existing users in the table
+                const users = querySnapshot.docs[0].data().users;
+                usersTable.innerHTML = users.map(user => `<tr><td>${user}</td></tr>`).join('');
+            } else {
+                console.error('No household found with the entered code');
+            }
+        })
+        .catch((error) => {
+            console.error(`Error getting documents: ${error}`);
+        });
 });
 
 // Add event listener to new username input
@@ -173,23 +173,37 @@ createJoinUserBtn.addEventListener('click', () => {
     db.collection('households').doc(householdId).update({
         users: firebase.firestore.FieldValue.arrayUnion(newUsernameInput.value)
     })
-    .then(() => {
-        console.log('User added to the household');
-        // Store the username in the local storage
-        localStorage.setItem('username', newUsernameInput.value);
-        // Redirect to the index.html page
-        window.location.href = 'index.html';
-    })
-    .catch((error) => {
-        console.error(`Error updating document: ${error}`);
-    });
+        .then(() => {
+            console.log('User added to the household');
+            // Store the username in the local storage
+            localStorage.setItem('username', newUsernameInput.value);
+            // Redirect to the index.html page
+            window.location.href = 'index.html';
+        })
+        .catch((error) => {
+            console.error(`Error updating document: ${error}`);
+        });
 
-    const params = new URLSearchParams(window.location.search);
-    const sharedCode = params.get('code');
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+
+    const sharedCode = getUrlParameter('code');
     if (sharedCode) {
         document.getElementById('household-code-input').value = sharedCode;
     }
-
 
 
 });
