@@ -62,17 +62,20 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
+const sharedCode = getUrlParameter('code');
+if (sharedCode) {
+    console.log(sharedCode);
+    joinHouseholdBtn.click();
+
+    householdCodeInput.value = sharedCode;
+}
+
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
     createHouseholdBtn.style.display = 'none';
     joinHouseholdBtn.style.display = 'none';
     joinHouseholdDiv.style.display = 'block';
     createBackDiv.style.display = 'flex';
-    const sharedCode = getUrlParameter('code');
-    if (sharedCode) {
-        console.log(sharedCode);
-        document.getElementById('household-code-input').value = sharedCode;
-    }
 });
 
 // Add event listener to household code input
@@ -198,7 +201,7 @@ createJoinUserBtn.addEventListener('click', () => {
         });
 
 
-    
+
 
 
 
