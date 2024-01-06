@@ -74,15 +74,13 @@ function autoFill() {
     }
 }
 
-
-const autoFillExecuted = sessionStorage.getItem('autoFillExecuted');
-
-// If it hasn't executed yet, run the autoFill function
-if (!autoFillExecuted) {
+if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
+    // The page was accessed through history/back button
+    console.log('Page accessed through history');
+} else {
+    // The page was opened through a link
+    console.log('Page opened through a link');
     autoFill();
-    
-    // Set a flag in sessionStorage to indicate that the function has executed
-    sessionStorage.setItem('autoFillExecuted', 'true');
 }
 
 // Add event listener to join household button
