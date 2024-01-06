@@ -62,15 +62,14 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-let code; 
+
 
 function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode) {
         console.log(sharedCode);
         
-        householdCodeInput.value = sharedCode;
-        code = Number(sharedCode);
+        householdCodeInput.value = 'hallo';
         joinHouseholdBtn.click();
     }
 }
