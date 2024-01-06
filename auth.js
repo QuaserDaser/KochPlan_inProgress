@@ -68,8 +68,7 @@ function autoFill() {
     if (sharedCode) {
         console.log(sharedCode);
         joinHouseholdBtn.click();
-        householdCodeInput.value = sharedCode;
-
+        householdCodeInput.innerHTML = sharedCode;
     }
 }
 
