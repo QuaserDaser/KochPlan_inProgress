@@ -77,28 +77,28 @@ createBackBtn.addEventListener('click', () => {
 })
 
 async function generateUniqueCode() {
-    let isUnique = false;
+    let istEizigartig = false;
     let code = '';
 
-    while (!isUnique) {
+    while (!istEizigartig) {
         // Generate a random code
         code = Math.floor(Math.random() * 100000).toString();
 
         // Fetch all household documents once
         const codeFetch = await db.collection('households').get();
 
-        let isCodeUnique = true;
+        let codeEinzigartig = true;
         codeFetch.forEach((doc) => {
             const codeFetched = doc.data().code;
             if (code === codeFetched) {
-                isCodeUnique = false;
+                codeEinzigartig = false;
                 return; // Break out of the forEach loop if a matching code is found
             }
         });
 
-        if (isCodeUnique) {
+        if (codeEinzigartig) {
             // The generated code is unique, exit the loop
-            isUnique = true;
+            istEizigartig = true;
         }
     }
 

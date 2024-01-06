@@ -198,18 +198,23 @@ logOutbtn.addEventListener('click', () => {
     window.location.href = 'welcome.html';
 });
 
-    const inviteUserBtn = document.getElementById('invite-user-btn');
+const inviteUserBtn = document.getElementById('invite-user-btn');
 inviteUserBtn.addEventListener('click', async () => {
     try {
         const week = getCurrentWeek();
         const doc = await db.collection('households').doc(householdId).get();
+        console.log(doc);
         if (doc.exists) {
+            const codeToShare = doc.data().code;
+            const householdName = doc.data().name;
+            const shareURL = 'https://kochplan.prydox-tech.de';
             console.log(codeToShare);
             console.log(householdName);
 
             await navigator.share({
                 title: 'Code zum Einladen weiterleiten',
                 text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei.`,
+                url: shareURL,
             });
 
             console.log('Code shared successfully');
