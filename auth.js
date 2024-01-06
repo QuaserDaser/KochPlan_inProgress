@@ -75,7 +75,15 @@ function autoFill() {
 }
 
 
-window.onload = autoFill;
+const autoFillExecuted = sessionStorage.getItem('autoFillExecuted');
+
+// If it hasn't executed yet, run the autoFill function
+if (!autoFillExecuted) {
+    autoFill();
+    
+    // Set a flag in sessionStorage to indicate that the function has executed
+    sessionStorage.setItem('autoFillExecuted', 'true');
+}
 
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
@@ -153,28 +161,26 @@ createUserBtn.addEventListener('click', async () => {
 });
 
 // Add event listener to join button
-joinBtn.addEventListener('click', async () => {
-    try {
-        const householdId = localStorage.getItem('householdId');
-        const docRef = await db.collection('households').doc(householdId).get();
-        if (docRef.exists) {
-            const users = docRef.data().users;
-            if (!users.includes(usernameInput.value)) {
-                await db.collection('households').doc(householdId).update({
-                    users: firebase.firestore.FieldValue.arrayUnion(usernameInput.value)
-                });
-                console.log('User added to the household');
-                localStorage.setItem('username', usernameInput.value);
-                window.location.href = 'index.html';
+joinBtn.addEventListener('click', () => {
+    // Search for the household with the entered code in Firestore
+    db.collection('households').where('code', '==', householdCodeInput.value).get()
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                // If the household is found, hide the join household div and display the select user div
+                joinHouseholdDiv.style.display = 'none'; // Hide the join household div
+                selectUserDiv.style.display = 'block'; // Display the select user div
+                // Store the household ID in the local storage
+                localStorage.setItem('householdId', querySnapshot.docs[0].id);
+                // Display the existing users in the table
+                const users = querySnapshot.docs[0].data().users;
+                usersTable.innerHTML = users.map(user => `<tr><td>${user}</td></tr>`).join('');
             } else {
-                console.log('User already in household');
+                console.error('No household found with the entered code');
             }
-        } else {
-            console.error('Household document does not exist');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-    }
+        })
+        .catch((error) => {
+            console.error(`Error getting documents: ${error}`);
+        });
 });
 
 // Add event listener to new username input
