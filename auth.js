@@ -63,24 +63,19 @@ function getUrlParameter(name) {
 }
 
 
-
 function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode) {
         console.log(sharedCode);
         joinHouseholdBtn.click();
-
         householdCodeInput.value = sharedCode;
     }
 }
 
-if (window.performance && window.performance.navigation.type === window.performance.navigation.TYPE_BACK_FORWARD) {
-    // The page was accessed through history/back button
-    console.log('Page accessed through history');
-} else {
-    // The page was opened through a link
-    console.log('Page opened through a link');
+if (!localStorage.getItem('firstTimeLoaded')) {
+    console.log('Page opened for the first time');
     autoFill();
+    localStorage.setItem('firstTimeLoaded', 'true');
 }
 
 // Add event listener to join household button
