@@ -64,12 +64,20 @@ function getUrlParameter(name) {
 
 
 
+let isAutoFilled = false; // Flag to indicate if autoFill() has been called
+
 function autoFill() {
     const sharedCode = getUrlParameter('code');
-    if (sharedCode) {
+    if (sharedCode && !isAutoFilled) {
         console.log(sharedCode);
         householdCodeInput.value = sharedCode;
-        joinHouseholdBtn.click();
+        isAutoFilled = true;
+
+        // Manually trigger the actions typically performed by joinHouseholdBtn click event
+        joinHouseholdDiv.style.display = 'block';
+        createHouseholdBtn.style.display = 'none';
+        joinHouseholdBtn.style.display = 'none';
+        createBackDiv.style.display = 'flex';
     }
 }
 
