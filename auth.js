@@ -62,6 +62,7 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
+let code; 
 
 function autoFill() {
     const sharedCode = getUrlParameter('code');
@@ -69,6 +70,7 @@ function autoFill() {
         console.log(sharedCode);
         
         householdCodeInput.value = sharedCode;
+        code = Number(sharedCode);
         joinHouseholdBtn.click();
     }
 }
@@ -153,6 +155,7 @@ createUserBtn.addEventListener('click', async () => {
 // Add event listener to join button
 joinBtn.addEventListener('click', () => {
     // Search for the household with the entered code in Firestore
+    console.log("Hallo");
     db.collection('households').where('code', '==', householdCodeInput.value).get()
         .then((querySnapshot) => {
             if (!querySnapshot.empty) {
