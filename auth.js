@@ -176,6 +176,28 @@ joinBtn.addEventListener('click', () => {
         });
 });
 
+function joinFunction(){
+    console.log("Hallo");
+    db.collection('households').where('code', '==', householdCodeInput.value).get()
+        .then((querySnapshot) => {
+            if (!querySnapshot.empty) {
+                // If the household is found, hide the join household div and display the select user div
+                joinHouseholdDiv.style.display = 'none'; // Hide the join household div
+                selectUserDiv.style.display = 'block'; // Display the select user div
+                // Store the household ID in the local storage
+                localStorage.setItem('householdId', querySnapshot.docs[0].id);
+                // Display the existing users in the table
+                const users = querySnapshot.docs[0].data().users;
+                usersTable.innerHTML = users.map(user => `<tr><td>${user}</td></tr>`).join('');
+            } else {
+                console.error('No household found with the entered code');
+            }
+        })
+        .catch((error) => {
+            console.error(`Error getting documents: ${error}`);
+        });
+}
+
 // Add event listener to new username input
 newUsernameInput.addEventListener('input', () => {
     createJoinUserBtn.disabled = !newUsernameInput.value;
