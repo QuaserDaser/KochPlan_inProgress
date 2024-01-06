@@ -67,8 +67,9 @@ function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode) {
         console.log(sharedCode);
+        
+        householdCodeInput.value = sharedCode;
         joinHouseholdBtn.click();
-        householdCodeInput.innerHTML = sharedCode;
     }
 }
 
