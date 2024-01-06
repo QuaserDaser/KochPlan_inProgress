@@ -202,6 +202,7 @@ createJoinUserBtn.addEventListener('click', () => {
 
     const sharedCode = getUrlParameter('code');
     if (sharedCode) {
+        console.log(sharedCode);
         document.getElementById('household-code-input').value = sharedCode;
     }
 
