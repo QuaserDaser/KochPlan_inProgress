@@ -72,10 +72,9 @@ function autoFill() {
     }
 }
 
-if (!localStorage.getItem('firstTimeLoaded')) {
-    console.log('Page opened for the first time');
+if (document.referrer && document.referrer !== window.location.href) {
+    console.log('Page opened via a link');
     autoFill();
-    localStorage.setItem('firstTimeLoaded', 'true');
 }
 
 // Add event listener to join household button
