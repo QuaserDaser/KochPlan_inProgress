@@ -207,7 +207,7 @@ inviteUserBtn.addEventListener('click', async () => {
         if (doc.exists) {
             const codeToShare = doc.data().code;
             const householdName = doc.data().name;
-            const shareURL = 'https://kochplan.prydox-tech.de';
+            const shareURL = 'https://kochplan.prydox-tech.de/welcome.html';
             console.log(codeToShare);
             console.log(householdName);
 
