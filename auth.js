@@ -62,13 +62,20 @@ function getUrlParameter(name) {
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
 
-const sharedCode = getUrlParameter('code');
-if (sharedCode) {
-    console.log(sharedCode);
-    joinHouseholdBtn.click();
 
-    householdCodeInput.value = sharedCode;
+
+function autoFill() {
+    const sharedCode = getUrlParameter('code');
+    if (sharedCode) {
+        console.log(sharedCode);
+        joinHouseholdBtn.click();
+
+        householdCodeInput.value = sharedCode;
+    }
 }
+
+
+window.onload(autoFill);
 
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
