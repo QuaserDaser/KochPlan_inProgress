@@ -72,20 +72,12 @@ function autoFill() {
         console.log(sharedCode);
         householdCodeInput.value = sharedCode;
         isAutoFilled = true;
-
-        // Manually trigger the actions typically performed by joinHouseholdBtn click event
-        joinHouseholdDiv.style.display = 'block';
-        createHouseholdBtn.style.display = 'none';
-        joinHouseholdBtn.style.display = 'none';
-        createBackDiv.style.display = 'flex';
+        joinHouseholdBtn.click();
     }
 }
 
 window.onload = autoFill;
 
-function anders(){
-    console.log('Gallo');
-}
 
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
