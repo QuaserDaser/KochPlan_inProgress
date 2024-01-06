@@ -83,6 +83,10 @@ function autoFill() {
 
 window.onload = autoFill;
 
+function anders(){
+    console.log('Gallo');
+}
+
 // Add event listener to join household button
 joinHouseholdBtn.addEventListener('click', () => {
     createHouseholdBtn.style.display = 'none';
