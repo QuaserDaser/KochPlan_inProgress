@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             } else {
                 console.log('No data found for the current week.');
                 allCells.forEach(cell => {
-                    cell.textContent = `(Kocht: false)`;
+                    cell.textContent = ``;
                 });
             }
         }).catch(error => {
