@@ -171,7 +171,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const start = new Date(startOfWeek.getFullYear(), 0, 0);
         const diffDays = Math.floor((startOfWeek - start) / (1000 * 60 * 60 * 24));
         const weekNumber = Math.ceil((diffDays + 1 + (n * 7)) / 7);
-        console.log(`Week_${weekNumber}`);
         return `Week_${weekNumber}`;
     }
 
