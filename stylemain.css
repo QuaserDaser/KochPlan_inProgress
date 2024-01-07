@@ -238,7 +238,7 @@ table td {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    background: var(--surface);
+    background: #F5F5F5;
     padding: 20px;
     border-radius: 15px;
     color: #000;
@@ -253,7 +253,6 @@ table td {
 }
 
 #dialog label,
-#dialog input,
 #dialog select {
     /* Other styles */
     justify-content: center;
@@ -329,6 +328,151 @@ table td {
     /* Make sure it's behind the dialog */
 }
 
+#dialog2 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 70%;
+    height: 60%;
+    max-width: 500px;
+    max-height: 600px;
+    overflow: auto;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background: #F5F5F5;
+    padding: 20px;
+    border-radius: 15px;
+    color: #000;
+}
+
+#dialog2.hidden {
+    display: none;
+}
+
+#dialog2-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--btn-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-primary);
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+#dialog-close2 {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--btn-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-primary);
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 999;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+
+}
+
+
+
+
+
+.inactiveMixin {
+    position: absolute;
+    display: block;
+  }
+  
+  /* Before Animation */
+  .beforeAnimation {
+    transition: .2s cubic-bezier(.24, 0, .5, 1);
+  }
+  
+  /* After Animation */
+  .afterAnimation {
+    box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 0px 0 hsla(0, 0%, 0%, .04), 0 4px 9px hsla(0, 0%, 0%, .13), 0 3px 3px hsla(0, 0%, 0%, .05);
+    transition: .35s cubic-bezier(.54, 1.60, .5, 1);
+  }
+  
+  /* Toggle Wrapper */
+  .toggleWrapper {
+    margin: auto;
+    padding: 20px;
+    width: 55px;
+  }
+  
+  /* Toggle Input */
+  .toggleWrapper input.mobileToggle {
+    opacity: 0;
+    position: absolute;
+  }
+  
+  /* Toggle Label */
+  .toggleWrapper input.mobileToggle + label {
+    position: relative;
+    display: inline-block;
+    user-select: none;
+    transition: .4s ease;
+    -webkit-tap-highlight-color: transparent;
+    height: 30px;
+    width: 50px; /* Adjust this width as needed */
+    border: 1px solid black;
+    border-radius: 60px;
+  }
+  
+  /* Toggle Label Before */
+  .toggleWrapper input.mobileToggle + label:before {
+    content: "";
+    position: absolute;
+    height: 30px;
+    width: 100%; /* Set width to 100% */
+    top: 0;
+    left: 0;
+    border-radius: 30px;
+    background-color: transparent;
+    transition: width .2s cubic-bezier(0, 0, 0, .1);
+  }
+  
+  /* Toggle Label After */
+  .toggleWrapper input.mobileToggle + label:after {
+    content: "";
+    position: absolute;
+    background: var(--btn-primary);
+    height: 32px; /* Increase the height of the circle button */
+    width: 32px; /* Increase the width of the circle button */
+    top: -1px; /* Adjust the positioning */
+    left: -1px; /* Adjust the positioning */
+    border-radius: 50%; /* Circular shape */
+    transition: .35s cubic-bezier(.54, 1.60, .5, 1);
+  }
+  
+  /* Toggle Input Checked */
+  .toggleWrapper input.mobileToggle:checked + label:before {
+    background: var(--success);
+  }
+  
+  /* Toggle Input Checked After */
+  .toggleWrapper input.mobileToggle:checked + label:after {
+    left: calc(100% - 30px); /* Adjusted the value to ensure it reaches the edge */
+  }
+  
 
 
 

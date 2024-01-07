@@ -23,17 +23,19 @@
     <br>
     <br>
     <br>
-    <hr style="color: var(--primary-dark); height: 2px; border: none; background-color: var(--primary-dark); margin: 20px 0; z-index: 10000;">
+    <hr
+      style="color: var(--primary-dark); height: 2px; border: none; background-color: var(--primary-dark); margin: 20px 0; z-index: 10000;">
 
 
-    <p style = "font-size: 15px; margin: 0;">Angemeldet als: </p>
-    <p style = "font-size: 25px; margin-top: 8px;"><i class="fa-solid fa-user"></i><span id="username2" style = "margin-left:5px"></span></p>
-    
+    <p style="font-size: 15px; margin: 0;">Angemeldet als: </p>
+    <p style="font-size: 25px; margin-top: 8px;"><i class="fa-solid fa-user"></i><span id="username2"
+        style="margin-left:5px"></span></p>
+
     <div id="invite-user-btn" class="invite-user-btn-class">
       <i class="fa-solid fa-user-plus"></i>
       <p style="margin-left: 10px;">Nutzer</p>
     </div>
-    
+
     <div id="logout-btn" class="logout-btn-class">
       <i class="fa-solid fa-arrow-right-from-bracket"></i>
       <p style="margin-left: 10px;">Log-Out</p>
@@ -119,9 +121,16 @@
     <p>Koch: <span id="username"></span></p>
     </select>
     <label for="needToCook">Ich koche an diesem Tag</label>
-    <input id="needToCook" type="checkbox">
+    <div class="toggleWrapper">
+      <input type="checkbox" name="toggle1" class="mobileToggle" id="toggle1" checked>
+      <label for="toggle1"></label>
+    </div>
     <button id="done">Done</button>
   </div>
+  <div id="dialog2" class="hidden">
+    <i id="dialog-close2" class="fas fa-times"></i>
+    <p>Koch: <span id="kochender"></span></p>
+    <p>Gericht: <span id="gericht"></span></p>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
@@ -131,4 +140,4 @@
   <script src="content.js?v=2" defer></script>
 </body>
 
-</html> 
+</html>

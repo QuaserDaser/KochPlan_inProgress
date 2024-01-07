@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Get the household ID and the username from the local storage
     const householdId = localStorage.getItem('householdId');
     const username = localStorage.getItem('username');
-
+    const kochAnzeige = document.getElementById('kochender');
+    const gerichtAnzeige = document.getElementById('gericht');
 
     // If the household ID or the username doesn't exist, redirect to the welcome.html page
     if (!householdId || !username) {
@@ -45,14 +46,37 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Get all cells
     const cells = document.querySelectorAll('td[id]');
     cells.forEach(cell => {
-        cell.addEventListener('click', () => {
-            // Show the dialog box and the backdrop
-            document.getElementById('dialog').classList.remove('hidden');
-            document.getElementById('backdrop').classList.remove('hidden');
-            // Save the cell id to use later
-            localStorage.setItem('cellId', cell.id);
+        cell.addEventListener('click', async () => {
+            const cellId = cell.id;
+            const week = getCurrentWeek(n);
+            const allCells = document.querySelectorAll('td[id]');
+            db.collection('households').doc(householdId).collection('weeks').doc(week).get().then(doc => {
+                if (doc.exists) {
+                    const data = doc.data();
+                    const [day, meal] = cellId.split('-');
+                    const needToCook = data[`${day}.${meal}.needToCook`];
+                    console.log(needToCook);
+                    if (needToCook === undefined) {
+                        document.getElementById('dialog').classList.remove('hidden');
+                        document.getElementById('backdrop').classList.remove('hidden');
+                        localStorage.setItem('cellId', cellId);
+                    } else {
+                        document.getElementById('dialog2').classList.remove('hidden');
+                        document.getElementById('backdrop').classList.remove('hidden');
+                        const cook = data[`${day}.${meal}.assignedUser`];
+                        const gericht = data[`${day}.${meal}.description`]
+                        kochAnzeige.textContent = cook;
+                        if(gericht != ""){
+                        gerichtAnzeige.textContent = gericht;
+                        }else{
+                            gerichtAnzeige.textContent = 'Keine Angabe';
+                        }
+                    }
+                }
+            })
         });
     });
+
 
     document.getElementById('done').addEventListener('click', () => {
         // Hide the dialog box
@@ -60,7 +84,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('backdrop').classList.add('hidden');
         // Get entered data
         const description = document.getElementById('description').value;
-        const needToCook = document.getElementById('needToCook').checked;
+        const needToCook = document.getElementById('toggle1').checked;
 
         // Save data to Firebase
         const week = getCurrentWeek(n);
@@ -83,8 +107,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }, { merge: true });
         const targetCell = document.getElementById(cellId);
         targetCell.textContent = assignedUser;
-        // Fetch tasks for the current week
-        fetchAndFilterDataForCooking();
+
 
     });
 
@@ -142,18 +165,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
     function getWeekRange(n) {
         const now = new Date();
         now.setDate(now.getDate() + (n * 7)); // Move the date by n weeks
-    
+
         const currentDay = now.getDay();
-    
+
         // Calculate the first day of the week
         const firstDay = new Date(now.getTime() - (currentDay === 0 ? 6 : currentDay - 1) * 24 * 60 * 60 * 1000);
-    
+
         // Calculate the last day of the week
         const lastDay = new Date(firstDay.getTime() + 6 * 24 * 60 * 60 * 1000);
-    
+
         const firstDayFormatted = `${('0' + firstDay.getDate()).slice(-2)}/${('0' + (firstDay.getMonth() + 1)).slice(-2)}/${firstDay.getFullYear() % 100}`;
         const lastDayFormatted = `${('0' + lastDay.getDate()).slice(-2)}/${('0' + (lastDay.getMonth() + 1)).slice(-2)}/${lastDay.getFullYear() % 100}`;
-    
+
         return `${firstDayFormatted} - ${lastDayFormatted}`;
     }
 
@@ -162,11 +185,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const now = new Date();
         const currentDay = now.getDay(); // Get the current day of the week
         const startOfWeek = new Date(now); // Create a copy of the current date
-    
+
         // Calculate how many days need to be subtracted to get to the start of the current week
         const diff = (currentDay === 0 ? 6 : currentDay - 1); // Adjust if Sunday (0) to 6, else subtract the current day
         startOfWeek.setDate(now.getDate() - diff);
-    
+
         // Calculate the number of weeks
         const start = new Date(startOfWeek.getFullYear(), 0, 0);
         const diffDays = Math.floor((startOfWeek - start) / (1000 * 60 * 60 * 24));
@@ -177,9 +200,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('dialog-close').addEventListener('click', () => {
         // Hide the dialog box
         document.getElementById('dialog').classList.add('hidden');
+        document.getElementById('dialog2').classList.add('hidden');
         document.getElementById('backdrop').classList.add('hidden');
         // Fetch tasks for the current week
         fetchAndFilterDataForCooking();
+    });
+    document.getElementById('dialog-close2').addEventListener('click', () => {
+        // Hide the dialog box
+        document.getElementById('dialog2').classList.add('hidden');
+        document.getElementById('backdrop').classList.add('hidden');
     });
 
 
@@ -235,6 +264,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     document.getElementById('username').textContent = username;
     document.getElementById('username2').textContent = username;
+
 
     const logOutbtn = document.getElementById('logout-btn');
     logOutbtn.addEventListener('click', () => {
