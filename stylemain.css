@@ -142,6 +142,7 @@ body {
 #next-week-btn {
     width: 30px;
     height: 30px;
+
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

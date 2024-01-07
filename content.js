@@ -144,8 +144,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         now.setDate(now.getDate() + (n * 7)); // Move the date by n weeks
     
         const currentDay = now.getDay();
-        const firstDay = new Date(now.getTime() - (currentDay - 1) * 24 * 60 * 60 * 1000);
-        const lastDay = new Date(now.getTime() + (7 - currentDay) * 24 * 60 * 60 * 1000);
+    
+        // Calculate the first day of the week
+        const firstDay = new Date(now.getTime() - (currentDay === 0 ? 6 : currentDay - 1) * 24 * 60 * 60 * 1000);
+    
+        // Calculate the last day of the week
+        const lastDay = new Date(firstDay.getTime() + 6 * 24 * 60 * 60 * 1000);
     
         const firstDayFormatted = `${('0' + firstDay.getDate()).slice(-2)}/${('0' + (firstDay.getMonth() + 1)).slice(-2)}/${firstDay.getFullYear() % 100}`;
         const lastDayFormatted = `${('0' + lastDay.getDate()).slice(-2)}/${('0' + (lastDay.getMonth() + 1)).slice(-2)}/${lastDay.getFullYear() % 100}`;
@@ -154,14 +158,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
 
-
     function getCurrentWeek(n) {
         const now = new Date();
-        const start = new Date(now.getFullYear(), 0, 0);
-        const diff = now - start;
-        const oneDay = 1000 * 60 * 60 * 24;
-        const day = Math.floor(diff / oneDay);
-        const weekNumber = Math.ceil((day + 1 + (n * 7)) / 7);
+        const currentDay = now.getDay(); // Get the current day of the week
+        const startOfWeek = new Date(now); // Create a copy of the current date
+    
+        // Calculate how many days need to be subtracted to get to the start of the current week
+        const diff = (currentDay === 0 ? 6 : currentDay - 1); // Adjust if Sunday (0) to 6, else subtract the current day
+        startOfWeek.setDate(now.getDate() - diff);
+    
+        // Calculate the number of weeks
+        const start = new Date(startOfWeek.getFullYear(), 0, 0);
+        const diffDays = Math.floor((startOfWeek - start) / (1000 * 60 * 60 * 24));
+        const weekNumber = Math.ceil((diffDays + 1 + (n * 7)) / 7);
+    
         return `Week_${weekNumber}`;
     }
 
