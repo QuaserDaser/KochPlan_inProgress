@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     }
 
     let n = 0;
-
+    let userColor;
 
     // Get all cells
     const cells = document.querySelectorAll('td[id]');
@@ -122,12 +122,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
             data[`${day}.${meal}.description`] = firebase.firestore.FieldValue.delete();
             data[`${day}.${meal}.assignedUser`] = firebase.firestore.FieldValue.delete();
             data[`${day}.${meal}.needToCook`] = firebase.firestore.FieldValue.delete();
-        
+
             db.collection('households').doc(householdId).collection('weeks').doc(week)
                 .set(data, { merge: true })
                 .then(() => {
                     console.log('Felder gelöscht');
-                        targetCell.textContent = '';
+                    targetCell.textContent = '';
                 })
                 .catch((error) => {
                     console.error('Fehler beim Löschen:', error);
@@ -159,6 +159,21 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         // Update the content of the cell when needToCook is true
                         const assignedUser = data[`${day}.${meal}.assignedUser`];
                         cell.textContent = `${assignedUser}`;
+
+                        db.collection('households')
+                            .doc(householdId)
+                            .get()
+                            .then((doc) => {
+                                if (doc.exists) {
+                                    const userData = doc.data();
+                                    const usersCustom = userData['users-custom'] || {}; // Fetch the 'users-custom' field
+                                    // Get the color for the current user
+                                    let currentUserColor = usersCustom[assignedUser]?.color || '';
+                                    cell.style.backgroundColor = currentUserColor;
+                                    currentUserColor = usersCustom[username]?.color || '';
+                                    userColor = currentUserColor;
+                                }
+                            });
                     } else {
                         // Update the content of the cell when needToCook is false
                         cell.textContent = ``;
@@ -233,6 +248,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('dialog-close2').addEventListener('click', () => {
         // Hide the dialog box
         document.getElementById('dialog2').classList.add('hidden');
+        document.getElementById('backdrop').classList.add('hidden');
+    });
+    document.getElementById('dialog-close3').addEventListener('click', () => {
+        // Hide the dialog box
+        document.getElementById('dialog3').classList.add('hidden');
         document.getElementById('backdrop').classList.add('hidden');
     });
 
@@ -330,6 +350,38 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
+    const colorPicker = document.getElementById('colorPicker');
+    const customUserBtn = document.getElementById('custom-user-btn');
+    customUserBtn.addEventListener('click', async () => {
+        document.getElementById('dialog3').classList.remove('hidden');
+        document.getElementById('backdrop').classList.remove('hidden');
+        console.log(userColor);
+        colorPicker.value = userColor;
+    });
 
+    const customUserDoneBtn = document.getElementById('done2');
+    customUserDoneBtn.addEventListener('click', async () => {
+        const selectedColor = colorPicker.value;
+        console.log(selectedColor);
+        // Reference the specific household document
+        const householdRef = db.collection('households').doc(householdId);
+
+        // Construct the data object to set the color for the username in the 'users-custom' field
+        const customUserData = {};
+        customUserData[username] = { color: selectedColor };
+
+        // Update the 'users-custom' field with the color corresponding to the username
+        householdRef.set({ 'users-custom': customUserData }, { merge: true })
+            .then(() => {
+                console.log('Color added to the specific user in the "users-custom" array field');
+            })
+            .catch((error) => {
+                console.error('Error adding color to the specific user in the "users-custom" array field:', error);
+            });
+
+        document.getElementById('dialog3').classList.add('hidden');
+        document.getElementById('backdrop').classList.add('hidden');
+        fetchAndFilterDataForCooking();
+    });
 
 });

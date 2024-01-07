@@ -28,8 +28,14 @@
 
 
     <p style="font-size: 15px; margin: 0;">Angemeldet als: </p>
-    <p style="font-size: 25px; margin-top: 8px;"><i class="fa-solid fa-user"></i><span id="username2"
+    <p style="font-size: 25px; margin-top: 15px;"><i class="fa-solid fa-user"></i><span id="username2"
         style="margin-left:5px"></span></p>
+
+
+    <div id="custom-user-btn" class="custom-user-btn-class">
+      <i class="fa-solid fa-wand-magic-sparkles"></i></i>
+      <p style="margin-left: 10px;">Nutzer</p>
+    </div>
 
     <div id="invite-user-btn" class="invite-user-btn-class">
       <i class="fa-solid fa-user-plus"></i>
@@ -69,45 +75,45 @@
     <tbody>
       <tr class="day">
         <td class="time">Montag</td>
-        <td id="monday-breakfast">Placeholder</td>
-        <td id="monday-lunch">Placeholder</td>
-        <td id="monday-dinner">Placeholder</td>
+        <td id="monday-breakfast">Laden</td>
+        <td id="monday-lunch">Laden</td>
+        <td id="monday-dinner">Laden</td>
       </tr>
       <tr class="day">
         <td class="time">Dienstag</td>
-        <td id="tuesday-breakfast">Placeholder</td>
-        <td id="tuesday-lunch">Placeholder</td>
-        <td id="tuesday-dinner">Placeholder</td>
+        <td id="tuesday-breakfast">Laden</td>
+        <td id="tuesday-lunch">Laden</td>
+        <td id="tuesday-dinner">Laden</td>
       </tr>
       <tr class="day">
         <td class="time">Mittwoch</td>
-        <td id="wednesday-breakfast">Placeholder</td>
-        <td id="wednesday-lunch">Placeholder</td>
-        <td id="wednesday-dinner">Placeholder</td>
+        <td id="wednesday-breakfast">Laden</td>
+        <td id="wednesday-lunch">Laden</td>
+        <td id="wednesday-dinner">Laden</td>
       </tr>
       <tr class="day">
         <td class="time">Donnerstag</td>
-        <td id="thursday-breakfast">Placeholder</td>
-        <td id="thursday-lunch">Placeholder</td>
-        <td id="thursday-dinner">Placeholder</td>
+        <td id="thursday-breakfast">Laden</td>
+        <td id="thursday-lunch">Laden</td>
+        <td id="thursday-dinner">Laden</td>
       </tr>
       <tr class="day">
         <td class="time">Freitag</td>
-        <td id="friday-breakfast">Placeholder</td>
-        <td id="friday-lunch">Placeholder</td>
-        <td id="friday-dinner">Placeholder</td>
+        <td id="friday-breakfast">Laden</td>
+        <td id="friday-lunch">Laden</td>
+        <td id="friday-dinner">Laden</td>
       </tr>
       <tr class="day">
         <td class="time">Samstag</td>
-        <td id="saturday-breakfast">Placeholder</td>
-        <td id="saturday-lunch">Placeholder</td>
-        <td id="saturday-dinner">Placeholder</td>
+        <td id="saturday-breakfast">Laden</td>
+        <td id="saturday-lunch">Laden</td>
+        <td id="saturday-dinner">Laden</td>
       </tr>
       <tr class="day">
         <td class="time">Sonntag</td>
-        <td id="sunday-breakfast">Placeholder</td>
-        <td id="sunday-lunch">Placeholder</td>
-        <td id="sunday-dinner">Placeholder</td>
+        <td id="sunday-breakfast">Laden</td>
+        <td id="sunday-lunch">Laden</td>
+        <td id="sunday-dinner">Laden</td>
       </tr>
     </tbody>
   </table>
@@ -131,6 +137,13 @@
     <i id="dialog-close2" class="fas fa-times"></i>
     <p>Koch: <span id="kochender"></span></p>
     <p>Gericht: <span id="gericht"></span></p>
+  </div>
+
+  <div id="dialog3" class="hidden">
+    <i id="dialog-close3" class="fas fa-times"></i>
+    <label for="colorPicker">Select a color:</label>
+<input type="color" id="colorPicker" name="colorPicker" value="#ff0000">
+    <button id="done2">Done</button>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
