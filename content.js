@@ -55,21 +55,30 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     const data = doc.data();
                     const [day, meal] = cellId.split('-');
                     const needToCook = data[`${day}.${meal}.needToCook`];
-                    console.log(needToCook);
+                    const descriptionInput = document.getElementById('description');
                     if (needToCook === undefined) {
                         document.getElementById('dialog').classList.remove('hidden');
                         document.getElementById('backdrop').classList.remove('hidden');
                         localStorage.setItem('cellId', cellId);
+                        descriptionInput.value = '';
                     } else {
-                        document.getElementById('dialog2').classList.remove('hidden');
-                        document.getElementById('backdrop').classList.remove('hidden');
-                        const cook = data[`${day}.${meal}.assignedUser`];
-                        const gericht = data[`${day}.${meal}.description`]
-                        kochAnzeige.textContent = cook;
-                        if(gericht != ""){
-                        gerichtAnzeige.textContent = gericht;
-                        }else{
-                            gerichtAnzeige.textContent = 'Keine Angabe';
+                        if (data[`${day}.${meal}.assignedUser`] == username) {
+                            document.getElementById('dialog').classList.remove('hidden');
+                            document.getElementById('backdrop').classList.remove('hidden');
+                            localStorage.setItem('cellId', cellId);
+
+                            descriptionInput.value = data[`${day}.${meal}.description`];
+                        } else {
+                            document.getElementById('dialog2').classList.remove('hidden');
+                            document.getElementById('backdrop').classList.remove('hidden');
+                            const cook = data[`${day}.${meal}.assignedUser`];
+                            const gericht = data[`${day}.${meal}.description`]
+                            kochAnzeige.textContent = cook;
+                            if (gericht != "") {
+                                gerichtAnzeige.textContent = gericht;
+                            } else {
+                                gerichtAnzeige.textContent = 'Keine Angabe';
+                            }
                         }
                     }
                 }
@@ -87,8 +96,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const needToCook = document.getElementById('toggle1').checked;
 
         // Save data to Firebase
+
         const week = getCurrentWeek(n);
         const cellId = localStorage.getItem('cellId');
+        const targetCell = document.getElementById(cellId);
         console.log('Cell ID from localStorage:', cellId);
 
         const splitCellId = cellId ? cellId.split('-') : null;
@@ -99,15 +110,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
         console.log('Day:', day, 'Meal:', meal);
         const assignedUser = username;
         console.log(cellId);
-
-        db.collection('households').doc(householdId).collection('weeks').doc(week).set({
-            [`${day}.${meal}.description`]: description,
-            [`${day}.${meal}.assignedUser`]: assignedUser,
-            [`${day}.${meal}.needToCook`]: needToCook
-        }, { merge: true });
-        const targetCell = document.getElementById(cellId);
-        targetCell.textContent = assignedUser;
-
+        if (needToCook) {
+            db.collection('households').doc(householdId).collection('weeks').doc(week).set({
+                [`${day}.${meal}.description`]: description,
+                [`${day}.${meal}.assignedUser`]: assignedUser,
+                [`${day}.${meal}.needToCook`]: needToCook
+            }, { merge: true });
+            targetCell.textContent = assignedUser;
+        } else {
+            const data = {};
+            data[`${day}.${meal}.description`] = firebase.firestore.FieldValue.delete();
+            data[`${day}.${meal}.assignedUser`] = firebase.firestore.FieldValue.delete();
+            data[`${day}.${meal}.needToCook`] = firebase.firestore.FieldValue.delete();
+        
+            db.collection('households').doc(householdId).collection('weeks').doc(week)
+                .set(data, { merge: true })
+                .then(() => {
+                    console.log('Felder gelöscht');
+                        targetCell.textContent = '';
+                })
+                .catch((error) => {
+                    console.error('Fehler beim Löschen:', error);
+                });
+        }
 
     });
 
