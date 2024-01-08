@@ -43,6 +43,7 @@ createHouseholdBtn.addEventListener('click', () => {
     createBackDiv.style.display = 'flex';
 });
 
+
 // Add event listener to household name input
 householdNameInput.addEventListener('input', () => {
     nextBtn.disabled = !householdNameInput.value;
