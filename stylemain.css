@@ -221,11 +221,13 @@ table thead th {
 table tr:nth-child(odd) {
     background: #eff0f1;
     color: black;
+    font-weight: bold;
 }
 
 table tr:nth-child(even) {
     background: #fff;
     color: black;
+    font-weight: bold;
 }
 
 table th,
@@ -482,7 +484,11 @@ label[for="description"] {
 
 }
 
-
+#colorPicker{
+    margin-top: 10px;
+    width: 100px;
+    height: 50px;
+}
 
 
 

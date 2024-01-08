@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                                     const usersCustom = userData['users-custom'] || {}; // Fetch the 'users-custom' field
                                     // Get the color for the current user
                                     let currentUserColor = usersCustom[assignedUser]?.color || '';
-                                    cell.style.backgroundColor = currentUserColor;
+                                    cell.style.color = currentUserColor;
                                     currentUserColor = usersCustom[username]?.color || '';
                                     userColor = currentUserColor;
                                 }
@@ -177,13 +177,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     } else {
                         // Update the content of the cell when needToCook is false
                         cell.textContent = ``;
-                        if (day === 'monday' || day === 'wednesday' || day === 'friday' || day === 'sunday') {
-                            cell.style.backgroundColor = '#eff0f1'
-                            console.log(cellId);
-                        }else{
-                            cell.style.backgroundColor = '#fff'
-                        }
-                         
                     }
                 });
             } else {
