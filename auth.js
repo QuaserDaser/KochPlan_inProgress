@@ -149,6 +149,7 @@ createUserBtn.addEventListener('click', async () => {
             localStorage.setItem('username', usernameInput.value);
             // Redirect to the index.html page
             window.location.href = 'index.html';
+            localStorage.setItem('isLoggedIn', 'true');
         })
         .catch((error) => {
             console.error(`Error adding document: ${error}`);
@@ -191,6 +192,7 @@ usersTable.addEventListener('click', (event) => {
         // If a td element was clicked, set the username in the local storage and redirect
         localStorage.setItem('username', event.target.textContent);
         window.location.href = 'index.html';
+        localStorage.setItem('isLoggedIn', 'true');
     }
 });
 
@@ -207,14 +209,20 @@ createJoinUserBtn.addEventListener('click', () => {
             localStorage.setItem('username', newUsernameInput.value);
             // Redirect to the index.html page
             window.location.href = 'index.html';
+            localStorage.setItem('isLoggedIn', 'true');
         })
         .catch((error) => {
             console.error(`Error updating document: ${error}`);
         });
 
-
-
-
-
-
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if the user is logged in by verifying the presence of the isLoggedIn flag
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    if (isLoggedIn === 'true') {
+      // Redirect to the index page if the user is logged in
+      window.location.href = 'index.html';
+    }
+  });

@@ -136,11 +136,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     });
 
-
-
-
-
-
     function fetchAndFilterDataForCooking() {
         const week = getCurrentWeek(n);
         const allCells = document.querySelectorAll('td[id]');
@@ -189,14 +184,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
             console.error('Error getting document:', error);
         });
     }
-
-
-
-
-
-
-
-
 
     // Call the function to fetch tasks for the current week
     fetchAndFilterDataForCooking();
@@ -314,6 +301,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const logOutbtn = document.getElementById('logout-btn');
     logOutbtn.addEventListener('click', () => {
         window.location.href = 'welcome.html';
+        localStorage.removeItem('isLoggedIn');
     });
 
     const inviteUserBtn = document.getElementById('invite-user-btn');
@@ -383,5 +371,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
         document.getElementById('backdrop').classList.add('hidden');
         fetchAndFilterDataForCooking();
     });
+
+
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    if (isLoggedIn !== 'true') {
+      // Redirect to the welcome page if the user is not logged in
+      window.location.href = 'welcome.html';
+    }
 
 });
