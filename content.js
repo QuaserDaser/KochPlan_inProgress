@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         }).catch(error => {
             console.error('Error getting document:', error);
-            DatenHolenUndVerarbeiten();
+            location.reload();
         });
     }
 
