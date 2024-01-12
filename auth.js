@@ -88,11 +88,6 @@ joinHouseholdBtn.addEventListener('click', () => {
     createBackDiv.style.display = 'flex';
 });
 
-// Add event listener to household code input
-householdCodeInput.addEventListener('input', () => {
-    joinBtn.disabled = !householdCodeInput.value;
-});
-
 // Add event listener to username input
 usernameInput.addEventListener('input', () => {
     createUserBtn.disabled = !usernameInput.value;
@@ -156,10 +151,49 @@ createUserBtn.addEventListener('click', async () => {
         });
 });
 
+
+const CodeAnzeige = document.getElementById('code-status-icon');
+householdCodeInput.addEventListener( 'input', () =>{
+    const householdCodes = [];
+
+db.collection('households').get().then((querySnapshot) => {
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        // Assuming 'code' is the field in your document that contains the code
+        const code = data.code;
+        householdCodes.push(code);
+    });
+
+    if (householdCodes.includes(householdCodeInput.value)) {
+        console.log(`The array contains ${householdCodeInput.value}.`);
+        CodeAnzeige.classList.remove('fa-times');
+        CodeAnzeige.classList.add('fa-check');
+        CodeAnzeige.style.color = 'green';
+    } else {
+        console.log(`The array does not contain ${householdCodeInput.value}.`);
+        CodeAnzeige.classList.remove('fa-check');
+        CodeAnzeige.classList.add('fa-times');
+        CodeAnzeige.style.color = 'red';
+    }
+
+
+    // Now 'householdCodes' array contains all the codes from the households
+    console.log('All household codes:', householdCodes);
+}).catch((error) => {
+    console.error('Error getting household codes:', error);
+});
+})
+
+
 // Add event listener to join button
+let indexCheck = 0;
 joinBtn.addEventListener('click', () => {
+    indexCheck = 0;
+    helper();
+});
+
+function helper(){
     // Search for the household with the entered code in Firestore
-    console.log("Hallo");
     db.collection('households').where('code', '==', householdCodeInput.value).get()
         .then((querySnapshot) => {
             if (!querySnapshot.empty) {
@@ -173,12 +207,16 @@ joinBtn.addEventListener('click', () => {
                 usersTable.innerHTML = users.map(user => `<tr><td>${user}</td></tr>`).join('');
             } else {
                 console.error('No household found with the entered code');
+                if(householdCodeInput.value != '' && indexCheck < 6){
+                    helper();
+                    indexCheck ++;
+                }
             }
         })
         .catch((error) => {
             console.error(`Error getting documents: ${error}`);
         });
-});
+}
 
 
 // Add event listener to new username input
@@ -220,6 +258,8 @@ createJoinUserBtn.addEventListener('click', () => {
 document.addEventListener('DOMContentLoaded', function() {
     // Check if the user is logged in by verifying the presence of the isLoggedIn flag
     const isLoggedIn = localStorage.getItem('isLoggedIn');
+
+    CodeAnzeige.style.color = 'red';
 
     if (isLoggedIn === 'true') {
       // Redirect to the index page if the user is logged in
