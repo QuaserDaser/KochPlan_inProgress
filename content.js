@@ -220,15 +220,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         }).catch(error => {
             console.error('Error getting document:', error);
-            setTimeout(() => {
-                DatenHolenUndVerarbeiten();
-            }, 1000)
+            location.reload();
         });
     }
 
 // Polling der DatenHolen Funktion
     DatenHolenUndVerarbeiten();
-    setInterval(DatenHolenUndVerarbeiten, 5000);
+    setInterval(DatenHolenUndVerarbeiten, 2000);
 
 // Funktion zur berechnung des Ersten und Letzten Tags der Woche mit abstandsfaktor n
     function ErstesUndLetztesDatum(n) {
@@ -382,22 +380,29 @@ document.addEventListener('DOMContentLoaded', (event) => {
     });
 
     const colorPicker = document.getElementById('colorPicker');
-    const customUserBtn = document.getElementById('custom-user-btn');
-    customUserBtn.addEventListener('click', () => {
-        document.getElementById('dialog3').classList.remove('hidden');
-        document.getElementById('backdrop').classList.remove('hidden');
-        db.collection('households').doc(householdId).get().then((doc) => {
-            if(doc.exists){
-                const userData = doc.data();
-            // Holen des Users-Custom Feld
-                usersCustom = userData['users-custom'] || {};
-                userColor = usersCustom[username]?.color || '';
-            }
-        });
-        console.log(userColor);
-        colorPicker.value = userColor;
-    });
+const customUserBtn = document.getElementById('custom-user-btn');
 
+customUserBtn.addEventListener('click', () => {
+    document.getElementById('dialog3').classList.remove('hidden');
+    document.getElementById('backdrop').classList.remove('hidden');
+
+    db.collection('households').doc(householdId).get().then(async (doc) => {
+        if (doc.exists) {
+            const userData = doc.data();
+            // Holen des Users-Custom Feld
+            usersCustom = userData['users-custom'] || {};
+            
+            // Use a try-catch block to handle the asynchronous operation
+            try {
+                userColor = await usersCustom[username]?.color || '';
+                console.log(username, userColor);
+                colorPicker.value = userColor;
+            } catch (error) {
+                console.error('Error fetching user color:', error);
+            }
+        }
+    });
+});
     const customUserDoneBtn = document.getElementById('done2');
     customUserDoneBtn.addEventListener('click', () => {
         const selectedColor = colorPicker.value;
