@@ -63,11 +63,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const cells = document.querySelectorAll('td[id]');
 // stetiges durchlaufen aller Zellen und auf Eventlistener onClick überprüfen 
     cells.forEach(cell => {
-        cell.addEventListener('click', async () => {
+        cell.addEventListener('click', () => {
         // bei onClick, derzeitige ZellenId in cellID speichern
             const cellId = cell.id;
-        //derzeitige Woche mithilfe der getCurrentWeek(n) Funktion ermitteln (anhängig vom Wocheninkrement n); 
-            const week = getCurrentWeek(n);
+        //derzeitige Woche mithilfe der getWochenIndikator(n) Funktion ermitteln (anhängig vom Wocheninkrement n); 
+            const week = getWochenIndikator(n);
         // holen der Daten aus der derzeitigen Woche (week) aus dem richtigen Haushalt (householdId) 
         // jeweils korrespondierend zur richtigen kollektion (zeige Firestore Datenbank) 
             db.collection('households').doc(householdId).collection('weeks').doc(week).get().then(doc => {
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Daten in Firebase speichern
     
     // Derzeitige Woche in abhängigkeit von n für Kollections-Speicherung in Weeks_n
-        const week = getCurrentWeek(n);
+        const week = getWochenIndikator(n);
     // ZellenID aus LocalStorage holen
         const cellId = localStorage.getItem('cellId');
         const targetCell = document.getElementById(cellId);
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 // Polling Funktion zum holen der dAtenbankdaten und zum richtigen Befüllen der Tabelle (Da keine Realtime Database -> Polling)
     function DatenHolenUndVerarbeiten() {
-        const week = getCurrentWeek(n);
+        const week = getWochenIndikator(n);
         const allCells = document.querySelectorAll('td[id]');
         db.collection('households').doc(householdId).collection('weeks').doc(week).get().then(doc => {
             if (doc.exists) {
@@ -205,7 +205,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                                 // Setzen der userColor Variable
                                     let currentUserColor = usersCustom[assignedUser]?.color || '';
                                     cell.style.color = currentUserColor;
-                                    userColor = currentUserColor;
                                 }
                             });
                     } else {
@@ -221,79 +220,87 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         }).catch(error => {
             console.error('Error getting document:', error);
-            location.reload();
+            setTimeout(() => {
+                DatenHolenUndVerarbeiten();
+            }, 1000)
         });
     }
 
-    // Call the function to fetch tasks for the current week
+// Polling der DatenHolen Funktion
     DatenHolenUndVerarbeiten();
     setInterval(DatenHolenUndVerarbeiten, 5000);
 
-    function getWeekRange(n) {
+// Funktion zur berechnung des Ersten und Letzten Tags der Woche mit abstandsfaktor n
+    function ErstesUndLetztesDatum(n) {
         const now = new Date();
-        now.setDate(now.getDate() + (n * 7)); // Move the date by n weeks
+    // Einbeziehen der n variable um die richtige Woche zu erhalten n * 7 Tage
+        now.setDate(now.getDate() + (n * 7));
 
         const currentDay = now.getDay();
 
-        // Calculate the first day of the week
+    // Erster Tag der Woche
         const firstDay = new Date(now.getTime() - (currentDay === 0 ? 6 : currentDay - 1) * 24 * 60 * 60 * 1000);
 
-        // Calculate the last day of the week
+    // Letzter Tag der Woche
         const lastDay = new Date(firstDay.getTime() + 6 * 24 * 60 * 60 * 1000);
-
+    // Formatierung der beiden Variablen
         const firstDayFormatted = `${('0' + firstDay.getDate()).slice(-2)}/${('0' + (firstDay.getMonth() + 1)).slice(-2)}/${firstDay.getFullYear() % 100}`;
         const lastDayFormatted = `${('0' + lastDay.getDate()).slice(-2)}/${('0' + (lastDay.getMonth() + 1)).slice(-2)}/${lastDay.getFullYear() % 100}`;
-
+    // Rückgabe der "Datumsspanne"
         return `${firstDayFormatted} - ${lastDayFormatted}`;
     }
 
-
-    function getCurrentWeek(n) {
+// Berechnung der Wochenzahl in abhängigkeit von n
+    function getWochenIndikator(n) {
         const now = new Date();
-        const currentDay = now.getDay(); // Get the current day of the week
-        const startOfWeek = new Date(now); // Create a copy of the current date
+    // Jetziges Datum holen und Kopie davon machen
+        const currentDay = now.getDay();
+        const startOfWeek = new Date(now);
 
-        // Calculate how many days need to be subtracted to get to the start of the current week
-        const diff = (currentDay === 0 ? 6 : currentDay - 1); // Adjust if Sunday (0) to 6, else subtract the current day
+    // Differenz der Tage bis Wochenanfang errechnen, Da Sonntag indikator 0 hat, auf 6 setzten
+    // um zu verhindern, das am Sonntag schon die nächste Woche ist
+        const diff = (currentDay === 0 ? 6 : currentDay - 1);
         startOfWeek.setDate(now.getDate() - diff);
 
-        // Calculate the number of weeks
+    // Wochennummer ermitteln
         const start = new Date(startOfWeek.getFullYear(), 0, 0);
         const diffDays = Math.floor((startOfWeek - start) / (1000 * 60 * 60 * 24));
         const weekNumber = Math.ceil((diffDays + 1 + (n * 7)) / 7);
         return `Week_${weekNumber}`;
     }
 
+// Schließen Button für Dialogfenster
     document.getElementById('dialog-close').addEventListener('click', () => {
-        // Hide the dialog box
+    // Displayflag auf hidden (versteckt) setzten
         document.getElementById('dialog').classList.add('hidden');
         document.getElementById('dialog2').classList.add('hidden');
         document.getElementById('backdrop').classList.add('hidden');
-        // Fetch tasks for the current week
+    // Daten erneuern
         DatenHolenUndVerarbeiten();
     });
 
+// Schließen Button für Dialogfenster
     document.getElementById('dialog-close2').addEventListener('click', () => {
-        // Hide the dialog box
         document.getElementById('dialog2').classList.add('hidden');
         document.getElementById('backdrop').classList.add('hidden');
         DatenHolenUndVerarbeiten();
     });
 
+// Schließen Button für Dialogfenster
     document.getElementById('dialog-close3').addEventListener('click', () => {
-        // Hide the dialog box
         document.getElementById('dialog3').classList.add('hidden');
         document.getElementById('backdrop').classList.add('hidden');
         DatenHolenUndVerarbeiten();
     });
 
 
-
+// Deklarationen und Initialisierungen von dem Menü (Navigationsbar)
     const menuBtn = document.getElementById('menu-btn-js');
     const menuBar = document.getElementById('menubar');
     const householdName = document.getElementById('household');
     let menuActive = false;
 
+// Toggeln der Menübar
     menuBtn.addEventListener('click', () => {
         if (menuActive) {
             householdName.style.color = 'var(--text-primary)';
@@ -308,34 +315,25 @@ document.addEventListener('DOMContentLoaded', (event) => {
         householdName.classList.toggle('active');
     });
 
+// Deklarationen von Datumsdisplay und den Wochenwechselbuttons
     const currentWeekElement = document.getElementById('current-week');
-    // Calculate first and last dates of the current week
-    const now = new Date();
-    const currentDay = now.getDay();
-    const firstDay = new Date(now.getTime() - (currentDay - 1) * 24 * 60 * 60 * 1000);
-    const lastDay = new Date(now.getTime() + (7 - currentDay) * 24 * 60 * 60 * 1000);
-
-    // Format the dates as required (assuming 'dd/mm/yyyy' format)
-    const firstDayFormatted = `${('0' + firstDay.getDate()).slice(-2)}/${('0' + (firstDay.getMonth() + 1)).slice(-2)}/${firstDay.getFullYear() % 100}`;
-    const lastDayFormatted = `${('0' + lastDay.getDate()).slice(-2)}/${('0' + (lastDay.getMonth() + 1)).slice(-2)}/${lastDay.getFullYear() % 100}`;
-
     const lastWeekBtn = document.getElementById('last-week-btn');
     const nextWeekBtn = document.getElementById('next-week-btn');
 
-
+// Bei klick n dementsprechend erhöhren bzw verringern
     lastWeekBtn.addEventListener('click', () => {
         n--;
-        currentWeekElement.textContent = getWeekRange(n);
+        currentWeekElement.textContent = ErstesUndLetztesDatum(n);
         DatenHolenUndVerarbeiten();
     });
 
     nextWeekBtn.addEventListener('click', () => {
         n++;
-        currentWeekElement.textContent = getWeekRange(n);
+        currentWeekElement.textContent = ErstesUndLetztesDatum(n);
         DatenHolenUndVerarbeiten();
     });
 
-    currentWeekElement.textContent = getWeekRange(n);
+    currentWeekElement.textContent = ErstesUndLetztesDatum(n);
 
 
 
@@ -352,7 +350,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const inviteUserBtn = document.getElementById('invite-user-btn');
     inviteUserBtn.addEventListener('click', async () => {
         try {
-            const week = getCurrentWeek(n);
+            const week = getWochenIndikator(n);
             const doc = await db.collection('households').doc(householdId).get();
             console.log(doc);
             if (doc.exists) {
@@ -385,15 +383,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     const colorPicker = document.getElementById('colorPicker');
     const customUserBtn = document.getElementById('custom-user-btn');
-    customUserBtn.addEventListener('click', async () => {
+    customUserBtn.addEventListener('click', () => {
         document.getElementById('dialog3').classList.remove('hidden');
         document.getElementById('backdrop').classList.remove('hidden');
+        db.collection('households').doc(householdId).get().then((doc) => {
+            if(doc.exists){
+                const userData = doc.data();
+            // Holen des Users-Custom Feld
+                usersCustom = userData['users-custom'] || {};
+                userColor = usersCustom[username]?.color || '';
+            }
+        });
         console.log(userColor);
         colorPicker.value = userColor;
     });
 
     const customUserDoneBtn = document.getElementById('done2');
-    customUserDoneBtn.addEventListener('click', async () => {
+    customUserDoneBtn.addEventListener('click', () => {
         const selectedColor = colorPicker.value;
         console.log(selectedColor);
         // Reference the specific household document
