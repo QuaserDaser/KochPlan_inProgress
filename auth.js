@@ -276,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Routing, schauen ob die isLoggedIn flag gesetzt ist
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const sharedCode = getUrlParameter('code');
-    if (sharedCode && !isAutoFilled) {
+    if (sharedCode) {
         if (isLoggedIn === 'true') {
         // Wenn eingeloggt, auf Index sofort weiterleiten
             window.location.href = 'index.html';
