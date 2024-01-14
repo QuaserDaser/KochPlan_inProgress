@@ -69,6 +69,7 @@ let isAutoFilled = false; // Flag zum einmaligen aufrufen der autoFill Funktion
 function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode && !isAutoFilled) {
+        localStorage.removeItem('isLoggedIn');
         console.log(sharedCode);
         householdCodeInput.value = sharedCode;
         isAutoFilled = true;

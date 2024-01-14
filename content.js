@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (doc.exists) {
                 const data = doc.data();
             // Daten einmal ausgaben in Konsole
-                console.log('Fetched data:', data); 
+                console.log('Daten: ', data); 
             
             // Durchlaufen aller Zellen und dementsprechende Zweisung der Daten auf basis des NeedToCook Attributs
                 allCells.forEach(cell => {
@@ -213,13 +213,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     }
                 });
             } else {
-                console.log('No data found for the current week.');
+                console.log('Keine Daten für diese Woche gefunden');
                 allCells.forEach(cell => {
                     cell.textContent = ``;
                 });
             }
         }).catch(error => {
-            console.error('Error getting document:', error);
+            console.error('Dokemunt nicht verfügbar', error);
             location.reload();
         });
     }
@@ -371,9 +371,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     url: shareURL.href,
                 });
 
-                console.log('Code shared successfully');
+                console.log('Teilen Erfolgreich');
             } else {
-                console.error('Document does not exist');
+                console.error('Dokument nicht verfügbar');
             }
         } catch (error) {
             console.error('Error:', error);
