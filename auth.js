@@ -67,9 +67,9 @@ let isAutoFilled = false; // Flag zum einmaligen aufrufen der autoFill Funktion
 
 // autoFill Funktion, welche automatische, wenn EInladungslink vorhanden zum "Bestehendem Haushalt Beitreten" Teil weiter geht und den Code einträgt
 function autoFill() {
+    localStorage.removeItem('isLoggedIn');
     const sharedCode = getUrlParameter('code');
     if (sharedCode && !isAutoFilled) {
-        localStorage.removeItem('isLoggedIn');
         console.log(sharedCode);
         householdCodeInput.value = sharedCode;
         isAutoFilled = true;
