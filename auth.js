@@ -73,7 +73,7 @@ function autoFill() {
         householdCodeInput.value = sharedCode;
         isAutoFilled = true;
         joinHouseholdBtn.click();
-        householdCodeInput.input();
+        updateCodeStatus();
     }
 }
 
@@ -158,9 +158,7 @@ createUserBtn.addEventListener('click', async () => {
 
 // Anzeige ob der Code verfügbar ist
 const CodeAnzeige = document.getElementById('code-status-icon');
-householdCodeInput.addEventListener( 'input', () =>{
-    // Join Button nur klickbar, wenn CodeFeld gefüllt
-    joinBtn.disabled = !householdCodeInput.value;
+function updateCodeStatus(){
 
     // Array welches alle Haushaltscodes speichert
     const householdCodes = [];
@@ -173,7 +171,7 @@ householdCodeInput.addEventListener( 'input', () =>{
         householdCodes.push(code);
     });
 
-    // Mit includes Dunktion überprüfen, ob der eingegebene Code mit einem Haushaltscode übereinstimmen
+    // Mit includes Funktion überprüfen, ob der eingegebene Code mit einem Haushaltscode übereinstimmen
     // wenn, Haken setzen, ansonsten Kreuz und dementsprechen grün oder rot
     if (householdCodes.includes(householdCodeInput.value)) {
         console.log(`The array contains ${householdCodeInput.value}.`);
@@ -186,9 +184,15 @@ householdCodeInput.addEventListener( 'input', () =>{
         CodeAnzeige.classList.add('fa-times');
         CodeAnzeige.style.color = 'red';
     }
-}).catch((error) => {
-    console.error('Codes nicht abrufbar: ', error);
-});
+    }).catch((error) => {
+        console.error('Codes nicht abrufbar: ', error);
+    });
+
+}
+householdCodeInput.addEventListener( 'input', () =>{
+    // Join Button nur klickbar, wenn CodeFeld gefüllt
+    joinBtn.disabled = !householdCodeInput.value;
+    updateCodeStatus();
 })
 
 
