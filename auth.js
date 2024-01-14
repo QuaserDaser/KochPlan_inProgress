@@ -65,7 +65,7 @@ function getUrlParameter(name) {
 
 let isAutoFilled = false; // Flag zum einmaligen aufrufen der autoFill Funktion  
 
-// autoFill Funktion, welche automatische, wenn EInladungslink vorhanden zum "Bestehendem Haushalt Beitreten" Teil weiter geht und den Code einträgt
+// autoFill Funktion, welche automatische, wenn Einladungslink vorhanden zum "Bestehendem Haushalt Beitreten" Teil weiter geht und den Code einträgt
 function autoFill() {
     localStorage.removeItem('isLoggedIn');
     const sharedCode = getUrlParameter('code');
@@ -275,9 +275,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Routing, schauen ob die isLoggedIn flag gesetzt ist
     const isLoggedIn = localStorage.getItem('isLoggedIn');
-
-    if (isLoggedIn === 'true') {
-      // Wenn eingeloggt, auf Index sofort weiterleiten
-      window.location.href = 'index.html';
+    const sharedCode = getUrlParameter('code');
+    if (sharedCode && !isAutoFilled) {
+        if (isLoggedIn === 'true') {
+        // Wenn eingeloggt, auf Index sofort weiterleiten
+            window.location.href = 'index.html';
+        }
     }
   });
