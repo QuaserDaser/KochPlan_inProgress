@@ -67,7 +67,6 @@ let isAutoFilled = false; // Flag zum einmaligen aufrufen der autoFill Funktion
 
 // autoFill Funktion, welche automatische, wenn Einladungslink vorhanden zum "Bestehendem Haushalt Beitreten" Teil weiter geht und den Code einträgt
 function autoFill() {
-    localStorage.removeItem('isLoggedIn');
     const sharedCode = getUrlParameter('code');
     if (sharedCode && !isAutoFilled) {
         console.log(sharedCode);
@@ -273,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // CodeAnzeige beim start auf Rot setzen 
     CodeAnzeige.style.color = 'red';
 
-    // Routing, schauen ob die isLoggedIn flag gesetzt ist
+    // Routing, schauen ob die isLoggedIn flag gesetzt ist und nur Wieterleiten, wenn kein autoFill Code Suffix vorhaden ist
     const isLoggedIn = localStorage.getItem('isLoggedIn');
     const sharedCode = getUrlParameter('code');
     if (!sharedCode) {
