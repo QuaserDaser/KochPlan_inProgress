@@ -1,4 +1,4 @@
-// Your web app's Firebase configuration
+// Firebase WebApp Konfigurationsdaten (Nötig für Verbindungsaufbau zur Firebase/ zur Firestore Datenbank)
 const firebaseConfig = {
     apiKey: "AIzaSyAge5KBOpZZHB6UBClofy4M1-pJRhZItVc",
     authDomain: "kochplan-c7d15.firebaseapp.com",
@@ -8,14 +8,12 @@ const firebaseConfig = {
     appId: "1:811343664645:web:09cb99d070bba357862e6c"
 };
 
-// Initialize Firebase
+//Firebase initialisierung
 const app = firebase.initializeApp(firebaseConfig);
 const analytics = firebase.analytics(app);
-
-// Initialize Firestore
 const db = firebase.firestore(app);
 
-// Get elements
+// Verschiedenste Elemente aus HTML Dokument holen
 const createHouseholdBtn = document.getElementById('create-household-btn');
 const joinHouseholdBtn = document.getElementById('join-household-btn');
 const createHouseholdDiv = document.getElementById('create-household');
@@ -26,7 +24,6 @@ const usernameInput = document.getElementById('username-input');
 const createUserBtn = document.getElementById('create-user-btn');
 const createBackBtn = document.getElementById('goback-btn');
 const createBackDiv = document.getElementById('goback-btn');
-// Get additional elements
 const joinHouseholdDiv = document.getElementById('join-household');
 const householdCodeInput = document.getElementById('household-code-input');
 const joinBtn = document.getElementById('join-btn');
@@ -35,8 +32,9 @@ const usersTable = document.getElementById('users-table');
 const newUsernameInput = document.getElementById('new-username-input');
 const createJoinUserBtn = document.getElementById('create-join-user-btn');
 
-// Add event listener to create household button
+// Haushalt erstellen eventListener onClick
 createHouseholdBtn.addEventListener('click', () => {
+    // Dementsprechendes anzeigen/verstecken der benötigten Folgelemenete
     createHouseholdBtn.style.display = 'none';
     joinHouseholdBtn.style.display = 'none';
     createHouseholdDiv.style.display = 'block';
@@ -44,18 +42,18 @@ createHouseholdBtn.addEventListener('click', () => {
 });
 
 
-// Add event listener to household name input
+// Weiter Button nur freigebn, wenn Text im Input Feld
 householdNameInput.addEventListener('input', () => {
     nextBtn.disabled = !householdNameInput.value;
 });
 
-// Add event listener to next button
+// Weiter Button onClick und dementsprechende Elemente anzeigen / verstecken
 nextBtn.addEventListener('click', () => {
     createHouseholdDiv.style.display = 'none';
     createUserDiv.style.display = 'block';
 });
 
-
+// Dunktion zur Ermittlung des an den Einladungslink angehängten Code
 function getUrlParameter(name) {
     name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
     const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -65,8 +63,9 @@ function getUrlParameter(name) {
 
 
 
-let isAutoFilled = false; // Flag to indicate if autoFill() has been called
+let isAutoFilled = false; // Flag zum einmaligen aufrufen der autoFill Funktion  
 
+// autoFill Funktion, welche automatische, wenn EInladungslink vorhanden zum "Bestehendem Haushalt Beitreten" Teil weiter geht und den Code einträgt
 function autoFill() {
     const sharedCode = getUrlParameter('code');
     if (sharedCode && !isAutoFilled) {
@@ -74,13 +73,15 @@ function autoFill() {
         householdCodeInput.value = sharedCode;
         isAutoFilled = true;
         joinHouseholdBtn.click();
+        householdCodeInput.input();
     }
 }
 
+// Onload die autoFill aufrufen
 window.onload = autoFill;
 
 
-// Add event listener to join household button
+// Bestehendem Haushalt beitreten Button
 joinHouseholdBtn.addEventListener('click', () => {
     createHouseholdBtn.style.display = 'none';
     joinHouseholdBtn.style.display = 'none';
@@ -88,24 +89,26 @@ joinHouseholdBtn.addEventListener('click', () => {
     createBackDiv.style.display = 'flex';
 });
 
-// Add event listener to username input
+// Nutzer erstellen nur möglich Wenn Input Feld gefüllt
 usernameInput.addEventListener('input', () => {
     createUserBtn.disabled = !usernameInput.value;
 });
 
+// Zurückbutton lädt seite neu
 createBackBtn.addEventListener('click', () => {
     window.location.href = 'welcome.html';
 })
 
+// Einzigartigen Haushaltscode erstellen Funktion
 async function generateUniqueCode() {
     let istEizigartig = false;
     let code = '';
 
     while (!istEizigartig) {
-        // Generate a random code
+        // Random Code generieren
         code = Math.floor(Math.random() * 100000).toString();
 
-        // Fetch all household documents once
+        // Alle Codes der Haushälter holen
         const codeFetch = await db.collection('households').get();
 
         let codeEinzigartig = true;
@@ -113,12 +116,12 @@ async function generateUniqueCode() {
             const codeFetched = doc.data().code;
             if (code === codeFetched) {
                 codeEinzigartig = false;
-                return; // Break out of the forEach loop if a matching code is found
+                return; // Wenn ein gleicher Code gefunden wurde, forEach Schleife verlassen
             }
         });
 
         if (codeEinzigartig) {
-            // The generated code is unique, exit the loop
+            // Code ist einzigartig, fertig!
             istEizigartig = true;
         }
     }
@@ -127,11 +130,11 @@ async function generateUniqueCode() {
 }
 
 
-// Add event listener to create user button
+// Haushalt und Nutzer Erstellen button 
 createUserBtn.addEventListener('click', async () => {
-    // Generate a random code
+    // Code generieren mit oben beschriebener Funktion
     const code = await generateUniqueCode();
-    // Create a new household in Firestore
+    // Neuen Haushalt in Datenbank erstellen und Daten speichern
     db.collection('households').add({
         name: householdNameInput.value,
         users: [usernameInput.value],
@@ -139,31 +142,39 @@ createUserBtn.addEventListener('click', async () => {
     })
         .then((docRef) => {
             console.log(`Household created with ID: ${docRef.id}`);
-            // Store the household ID and the username in the local storage
+            // HaushaltID in localstorage speichern um spätere Identifikation zu sichern
             localStorage.setItem('householdId', docRef.id);
+            // Nutzername als LocalStorage speichern um diesen Später abzurufen
             localStorage.setItem('username', usernameInput.value);
-            // Redirect to the index.html page
+            // Zur index.html weiterleiten
             window.location.href = 'index.html';
+            // isLoggedIn flag setzen fürs Spätere Routing 
             localStorage.setItem('isLoggedIn', 'true');
         })
         .catch((error) => {
-            console.error(`Error adding document: ${error}`);
+            console.error(`Dokument konnte nicht erstellt werden: ${error}`);
         });
 });
 
-
+// Anzeige ob der Code verfügbar ist
 const CodeAnzeige = document.getElementById('code-status-icon');
 householdCodeInput.addEventListener( 'input', () =>{
+    // Join Button nur klickbar, wenn CodeFeld gefüllt
+    joinBtn.disabled = !householdCodeInput.value;
+
+    // Array welches alle Haushaltscodes speichert
     const householdCodes = [];
 
-db.collection('households').get().then((querySnapshot) => {
+    db.collection('households').get().then((querySnapshot) => {
     querySnapshot.forEach((doc) => {
         const data = doc.data();
-        // Assuming 'code' is the field in your document that contains the code
+        // Codes in das Code Array schieben
         const code = data.code;
         householdCodes.push(code);
     });
 
+    // Mit includes Dunktion überprüfen, ob der eingegebene Code mit einem Haushaltscode übereinstimmen
+    // wenn, Haken setzen, ansonsten Kreuz und dementsprechen grün oder rot
     if (householdCodes.includes(householdCodeInput.value)) {
         console.log(`The array contains ${householdCodeInput.value}.`);
         CodeAnzeige.classList.remove('fa-times');
@@ -175,17 +186,13 @@ db.collection('households').get().then((querySnapshot) => {
         CodeAnzeige.classList.add('fa-times');
         CodeAnzeige.style.color = 'red';
     }
-
-
-    // Now 'householdCodes' array contains all the codes from the households
-    console.log('All household codes:', householdCodes);
 }).catch((error) => {
-    console.error('Error getting household codes:', error);
+    console.error('Codes nicht abrufbar: ', error);
 });
 })
 
 
-// Add event listener to join button
+// Beitreten Button mit helper Funktion um Verbindungsfehler mit Firebase zum Umgehen, führt zum 6xmaligen aufrufen der Beitreten-Logik
 let indexCheck = 0;
 joinBtn.addEventListener('click', () => {
     indexCheck = 0;
@@ -193,20 +200,20 @@ joinBtn.addEventListener('click', () => {
 });
 
 function helper(){
-    // Search for the household with the entered code in Firestore
+    // Beitreten Logik
     db.collection('households').where('code', '==', householdCodeInput.value).get()
         .then((querySnapshot) => {
             if (!querySnapshot.empty) {
-                // If the household is found, hide the join household div and display the select user div
-                joinHouseholdDiv.style.display = 'none'; // Hide the join household div
-                selectUserDiv.style.display = 'block'; // Display the select user div
-                // Store the household ID in the local storage
+                // Wenn Code da, divs zeigen / verstecken
+                joinHouseholdDiv.style.display = 'none';
+                selectUserDiv.style.display = 'block'; 
+                // die dementsprechende HaushaltsID in localStorage Speichern
                 localStorage.setItem('householdId', querySnapshot.docs[0].id);
-                // Display the existing users in the table
+                // alle Nutzer dieses Haushalts in der Nutzertabelle anzeigen
                 const users = querySnapshot.docs[0].data().users;
                 usersTable.innerHTML = users.map(user => `<tr><td>${user}</td></tr>`).join('');
             } else {
-                console.error('No household found with the entered code');
+                console.error('Haushalt nicht gefunden!');
                 if(householdCodeInput.value != '' && indexCheck < 6){
                     helper();
                     indexCheck ++;
@@ -214,55 +221,58 @@ function helper(){
             }
         })
         .catch((error) => {
-            console.error(`Error getting documents: ${error}`);
+            console.error(`Dokumente konnten nicht geholt werden:  ${error}`);
         });
 }
 
 
-// Add event listener to new username input
+// Neuen Nutzer zum Beigetreten Haushalt hinzufügen nur möglich, wenn Nutzername eingetragen
 newUsernameInput.addEventListener('input', () => {
     createJoinUserBtn.disabled = !newUsernameInput.value;
 });
 
-// Add event listener to users table
+// Nutzertabelle abfragen, wenn auf Nutzername aus Tabelle geklicket wird
 usersTable.addEventListener('click', (event) => {
     if (event.target.tagName === 'TD') {
-        // If a td element was clicked, set the username in the local storage and redirect
+        // Wenn click, Nutzer dementsprechend setzten und weiterleiten auf Index sowie login flag setzen
         localStorage.setItem('username', event.target.textContent);
         window.location.href = 'index.html';
         localStorage.setItem('isLoggedIn', 'true');
     }
 });
 
-// Add event listener to create and join user button
+// Neuen Nutzer erstellen und Beitreten
 createJoinUserBtn.addEventListener('click', () => {
-    // Add the new user to the household in Firestore
+    // Nutzer zum Haushalt in Firestore hinzufügen
     const householdId = localStorage.getItem('householdId');
     db.collection('households').doc(householdId).update({
         users: firebase.firestore.FieldValue.arrayUnion(newUsernameInput.value)
     })
         .then(() => {
             console.log('User added to the household');
-            // Store the username in the local storage
+            // Nutzername dementpsrechend als LocalStorage speichern 
             localStorage.setItem('username', newUsernameInput.value);
-            // Redirect to the index.html page
+            // Weiterleiten zu Index und loggedIn flag setzen
             window.location.href = 'index.html';
             localStorage.setItem('isLoggedIn', 'true');
         })
         .catch((error) => {
-            console.error(`Error updating document: ${error}`);
+            console.error(`Nutzer konnte dem Haushalt nicht hinzugefügt werden: ${error}`);
         });
 
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if the user is logged in by verifying the presence of the isLoggedIn flag
-    const isLoggedIn = localStorage.getItem('isLoggedIn');
 
+
+document.addEventListener('DOMContentLoaded', function() {
+    // CodeAnzeige beim start auf Rot setzen 
     CodeAnzeige.style.color = 'red';
 
+    // Routing, schauen ob die isLoggedIn flag gesetzt ist
+    const isLoggedIn = localStorage.getItem('isLoggedIn');
+
     if (isLoggedIn === 'true') {
-      // Redirect to the index page if the user is logged in
+      // Wenn eingeloggt, auf Index sofort weiterleiten
       window.location.href = 'index.html';
     }
   });

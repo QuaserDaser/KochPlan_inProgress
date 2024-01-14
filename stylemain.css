@@ -36,15 +36,12 @@ body {
     transition: transform 0.3s ease-in-out;
     position: absolute;
     top: 10px;
-    /* Adjust as needed */
     left: 10px;
-    /* Adjust as needed */
     z-index: 102;
 }
 
 .menu-btn.pushed {
     transform: translateX(250px);
-    /* Adjust based on the menu width */
 }
 
 .menubar {
@@ -53,14 +50,11 @@ body {
     justify-content: left;
     width: 20%;
     height: 100%;
-    /* Set height to cover the entire viewport height */
     max-width: 500px;
     overflow: auto;
     position: fixed;
     left: 0;
-    /* Stick it to the left side */
     top: 0;
-    /* Align it to the top */
     z-index: 1000;
     background: var(--surface);
     padding: 20px;
@@ -139,7 +133,6 @@ body {
 .menubar.active {
     transform: translateX(0);
     width: 250px;
-    /* Adjust width as needed */
 }
 
 .household-name {
@@ -174,18 +167,15 @@ body {
     top: 50%;
     transform: translateY(-50%);
     z-index: 50;
-    /* Ensure the buttons are above the table */
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 #last-week-btn {
     left: 10px;
-    /* Adjust as needed */
 }
 
 #next-week-btn {
     right: 10px;
-    /* Adjust as needed */
 }
 
 #last-week-btn i,
@@ -361,9 +351,7 @@ label[for="description"] {
     height: 100%;
     background-color: rgba(27, 27, 27, 0.452);
     backdrop-filter: blur(5px);
-    /* Add a blur effect */
     z-index: 999;
-    /* Make sure it's behind the dialog */
 }
 
 #backdrop2 {
@@ -374,9 +362,7 @@ label[for="description"] {
     height: 100%;
     background-color: rgba(27, 27, 27, 0.452);
     backdrop-filter: blur(5px);
-    /* Add a blur effect */
     z-index: 99;
-    /* Make sure it's behind the dialog */
 }
 
 #dialog2 {
@@ -490,37 +476,32 @@ label[for="description"] {
     height: 50px;
 }
 
-
+/*Toggle Switch CSS*/
 
 .inactiveMixin {
     position: absolute;
     display: block;
 }
 
-/* Before Animation */
 .beforeAnimation {
     transition: .2s cubic-bezier(.24, 0, .5, 1);
 }
 
-/* After Animation */
 .afterAnimation {
     box-shadow: 0 0 0 1px hsla(0, 0%, 0%, 0.1), 0 4px 0px 0 hsla(0, 0%, 0%, .04), 0 4px 9px hsla(0, 0%, 0%, .13), 0 3px 3px hsla(0, 0%, 0%, .05);
     transition: .35s cubic-bezier(.54, 1.60, .5, 1);
 }
 
-/* Toggle Wrapper */
 .toggleWrapper {
     padding: 20px;
     width: 65px;
 }
 
-/* Toggle Input */
 .toggleWrapper input.mobileToggle {
     opacity: 0;
     position: absolute;
 }
 
-/* Toggle Label */
 .toggleWrapper input.mobileToggle+label {
     position: relative;
     display: inline-block;
@@ -529,18 +510,15 @@ label[for="description"] {
     -webkit-tap-highlight-color: transparent;
     height: 30px;
     width: 50px;
-    /* Adjust this width as needed */
     border: 1px solid black;
     border-radius: 60px;
 }
 
-/* Toggle Label Before */
 .toggleWrapper input.mobileToggle+label:before {
     content: "";
     position: absolute;
     height: 30px;
     width: 100%;
-    /* Set width to 100% */
     top: 0;
     left: 0;
     border-radius: 30px;
@@ -548,33 +526,24 @@ label[for="description"] {
     transition: width .2s cubic-bezier(0, 0, 0, .1);
 }
 
-/* Toggle Label After */
 .toggleWrapper input.mobileToggle+label:after {
     content: "";
     position: absolute;
     background: var(--btn-primary);
     height: 32px;
-    /* Increase the height of the circle button */
     width: 32px;
-    /* Increase the width of the circle button */
     top: -1px;
-    /* Adjust the positioning */
     left: -1px;
-    /* Adjust the positioning */
     border-radius: 50%;
-    /* Circular shape */
     transition: .35s cubic-bezier(.54, 1.60, .5, 1);
 }
 
-/* Toggle Input Checked */
 .toggleWrapper input.mobileToggle:checked+label:before {
     background: var(--success);
 }
 
-/* Toggle Input Checked After */
 .toggleWrapper input.mobileToggle:checked+label:after {
     left: calc(100% - 30px);
-    /* Adjusted the value to ensure it reaches the edge */
 }
 
 

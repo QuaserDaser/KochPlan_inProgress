@@ -1,4 +1,4 @@
-//Firebase WebApp Konfigurationsdaten (Nötig für Verbindungsaufbau zur Firebase/ zur Firestore Datenbank)
+// Firebase WebApp Konfigurationsdaten (Nötig für Verbindungsaufbau zur Firebase/ zur Firestore Datenbank)
 const firebaseConfig = {
     apiKey: "AIzaSyAge5KBOpZZHB6UBClofy4M1-pJRhZItVc",
     authDomain: "kochplan-c7d15.firebaseapp.com",
@@ -44,16 +44,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
         window.location.href = 'welcome.html';
         localStorage.removeItem('isLoggedIn');
     } else {
-        // Fetch the household data from Firestore
+        // Holen der Haushaltsdaten von Firestore
         db.collection('households').doc(householdId).get().then((doc) => {
             if (doc.exists) {
-                // Display the household data
+                // H1 Element auf Haushaltsname setzten
                 document.getElementById('household').textContent = doc.data().name;
             } else {
-                console.log("No such document!");
+                console.log("Dokument nicht vorhanden");
             }
         }).catch((error) => {
-            console.log("Error getting document:", error);
+            console.log("Fehler beim Laden des Dokuments: ", error);
         });
     }
 
@@ -334,40 +334,41 @@ document.addEventListener('DOMContentLoaded', (event) => {
     currentWeekElement.textContent = ErstesUndLetztesDatum(n);
 
 
-
+// Setzen der Span Tags auf den Nutzernamen
     document.getElementById('username').textContent = username;
     document.getElementById('username2').textContent = username;
 
-
+//Log-Out-Btn -> zurück zur Welcome.html und isLoggedIn flag löschen um Routing zum gewährleisten
     const logOutbtn = document.getElementById('logout-btn');
     logOutbtn.addEventListener('click', () => {
         window.location.href = 'welcome.html';
         localStorage.removeItem('isLoggedIn');
     });
 
+// Invite User mit navigator.share class, erstellen einer URL mit "Code-Suffix" um automatische ausfüllung des Haushaltscode Felds 
+// beim LogIn zu ermöglichen 
     const inviteUserBtn = document.getElementById('invite-user-btn');
     inviteUserBtn.addEventListener('click', async () => {
         try {
-            const week = getWochenIndikator(n);
+        // Holen des Haushaltsspeziffischen Codes
             const doc = await db.collection('households').doc(householdId).get();
             console.log(doc);
             if (doc.exists) {
                 const codeToShare = doc.data().code;
                 const householdName = doc.data().name;
+            // Zusammensetzen der URl mtihilfe der baseURL, des sharePaths und dem searchParam code
                 const baseURL = 'https://kochplan.prydox-tech.de';
                 const sharePath = '/welcome.html';
                 const shareURL = new URL(sharePath, baseURL);
-
-                // Append the code as a URL parameter
                 shareURL.searchParams.append('code', codeToShare);
 
                 console.log(codeToShare);
                 console.log(householdName);
-
+            // Navigator.share aufrufem und Nachricht erstellen
                 await navigator.share({
                     title: 'Code zum Einladen weiterleiten',
-                    text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei.`,
-                    url: shareURL.href, // Use the href of the URL object
+                    text: `Tritt dem Haushalt ${householdName} mit dem Code ${codeToShare} bei. Oder verwende diesen Link: `,
+                    url: shareURL.href,
                 });
 
                 console.log('Code shared successfully');
@@ -379,7 +380,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     });
 
-    const colorPicker = document.getElementById('colorPicker');
+const colorPicker = document.getElementById('colorPicker');
 const customUserBtn = document.getElementById('custom-user-btn');
 
 customUserBtn.addEventListener('click', () => {
@@ -389,38 +390,39 @@ customUserBtn.addEventListener('click', () => {
     db.collection('households').doc(householdId).get().then(async (doc) => {
         if (doc.exists) {
             const userData = doc.data();
-            // Holen des Users-Custom Feld
+        // Holen des Users-Custom Feld
             usersCustom = userData['users-custom'] || {};
             
-            // Use a try-catch block to handle the asynchronous operation
+        // Holen der Nutzerfarbe um "ColorPicker PreValue" zu setzten 
             try {
                 userColor = await usersCustom[username]?.color || '';
                 console.log(username, userColor);
                 colorPicker.value = userColor;
             } catch (error) {
-                console.error('Error fetching user color:', error);
+                console.error('Nutzer-Farbe konnte nicht geholt werden: ', error);
             }
         }
     });
 });
+
     const customUserDoneBtn = document.getElementById('done2');
     customUserDoneBtn.addEventListener('click', () => {
         const selectedColor = colorPicker.value;
         console.log(selectedColor);
-        // Reference the specific household document
+        // Referenz zum Haushalt erstellen
         const householdRef = db.collection('households').doc(householdId);
 
-        // Construct the data object to set the color for the username in the 'users-custom' field
+        // Daten für Nutzer Anpassung vorbereiten
         const customUserData = {};
         customUserData[username] = { color: selectedColor };
 
-        // Update the 'users-custom' field with the color corresponding to the username
+        // users-custom Feld updaten und Wert entweder erneuern oder neuen users-custom hinzufügen
         householdRef.set({ 'users-custom': customUserData }, { merge: true })
             .then(() => {
-                console.log('Color added to the specific user in the "users-custom" array field');
+                console.log('Farbe hinzugefügt zum "users-custom" Array Feld');
             })
             .catch((error) => {
-                console.error('Error adding color to the specific user in the "users-custom" array field:', error);
+                console.error('Fehler beim hinzufügen der Daten zum spezifischen Nutzer: ', error);
             });
 
         document.getElementById('dialog3').classList.add('hidden');
