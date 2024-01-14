@@ -546,7 +546,16 @@ label[for="description"] {
     left: calc(100% - 30px);
 }
 
-
+footer {
+    position: fixed;
+    bottom: 3%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: small;
+    color: white;
+}
 
 
 @media (max-width: 600px) {

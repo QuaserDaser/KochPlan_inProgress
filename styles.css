@@ -112,3 +112,14 @@ input[type="text"]:focus {
     text-align: center;
     line-height: 30px;
 }
+
+footer {
+    position: fixed;
+    bottom: 3%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: small;
+    color: white;
+}
