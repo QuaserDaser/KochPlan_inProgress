@@ -61,16 +61,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
 //Alle Zellen der Kalendertabelle holen
     const cells = document.querySelectorAll('td[id]');
-// stetiges durchlaufen aller Zellen und auf Eventlistener onClick überprüfen 
-    cells.forEach(cell => {
-        cell.addEventListener('click', () => {
+// stetiges Durchlaufen aller Zellen und auf Eventlistener onClick überprüfen
+cells.forEach(cell => {
+    cell.addEventListener('click', () => {
         // bei onClick, derzeitige ZellenId in cellID speichern
-            const cellId = cell.id;
-        //derzeitige Woche mithilfe der getWochenIndikator(n) Funktion ermitteln (anhängig vom Wocheninkrement n); 
-            const week = getWochenIndikator(n);
-        // holen der Daten aus der derzeitigen Woche (week) aus dem richtigen Haushalt (householdId) 
-        // jeweils korrespondierend zur richtigen kollektion (zeige Firestore Datenbank) 
-            db.collection('households').doc(householdId).collection('weeks').doc(week).get().then(doc => {
+        const cellId = cell.id;
+        // derzeitige Woche mithilfe der getWochenIndikator(n) Funktion ermitteln (abhängig vom Wocheninkrement n);
+        const week = getWochenIndikator(n);
+
+        // Referenz zum Haushalt und der Woche erstellen
+        const householdRef = db.collection('households').doc(householdId);
+        const weekRef = householdRef.collection('weeks').doc(week);
+
+        // Überprüfen, ob das week_n Dokument existiert
+        weekRef.get().then(weekDoc => {
+            if (!weekDoc.exists) {
+                // Wenn nicht existiert, erstelle das Dokument
+                weekRef.set({});
+            }
+
+            // Jetzt Daten aus der derzeitigen Woche (week) aus dem richtigen Haushalt (householdId)
+            // jeweils korrespondierend zur richtigen Kollektion (zeige Firestore Datenbank)
+            weekRef.get().then(doc => {
                 if (doc.exists) {
                 // abrufen der Daten aus dem week_n Dokument in die variable data 
                     const data = doc.data();
@@ -113,12 +125,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
                             }
                         }
                     }
-                }else{
+                } else {
                     console.log('Dokument nicht verfügbar');
                 }
-            })
+            });
         });
     });
+});
 
 // Fertig Button Dialog Koch-Eintragung
     document.getElementById('done').addEventListener('click', () => {

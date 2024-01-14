@@ -539,7 +539,7 @@ label[for="description"] {
 }
 
 .toggleWrapper input.mobileToggle:checked+label:before {
-    background: var(--success);
+    background: var(--primary-light);
 }
 
 .toggleWrapper input.mobileToggle:checked+label:after {
@@ -547,14 +547,15 @@ label[for="description"] {
 }
 
 footer {
-    position: fixed;
-    bottom: 3%;
+    position: relative;
+    bottom: 0;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: small;
     color: white;
+    padding-top: 20px;
 }
 
 

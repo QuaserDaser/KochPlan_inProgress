@@ -39,7 +39,7 @@ header {
 }
 
 h1 {
-    color: var(--primary-light);
+    color: var(--surface);
     font-size: 45px;
 }
 
@@ -68,7 +68,7 @@ button:hover {
 input[type="text"] {
     padding: 10px 20px;
     margin: 10px;
-    background-color: var(--secondary-dark);
+    background-color: var(--secondary);
     color: var(--text-primary);
     border: 1px solid #555;
     border-radius: 12px;
@@ -115,11 +115,13 @@ input[type="text"]:focus {
 
 footer {
     position: fixed;
-    bottom: 3%;
+    bottom: 0;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: small;
     color: white;
+    padding-top: 30px;
+    z-index: -10;
 }
